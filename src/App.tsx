@@ -1,34 +1,58 @@
-import {useState} from 'react'
-import viteLogo from './assets/vite.svg'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import React, {useEffect, useState} from "react";
+import {
+    createTheme,
+    CssBaseline,
+    PaletteMode,
+    ThemeProvider,
+} from "@mui/material";
+import StartError from "./components/StartError";
+import AppContent from "./AppContent";
+
+const tg = window.Telegram.WebApp;
 
 function App() {
-    const [count, setCount] = useState(0)
+
+    const [mode, setMode] = useState<PaletteMode>(tg.colorScheme);
+    const [error, setError] = useState(false);
+
+    useEffect(() => {
+        console.log('---> App MOUNTED');
+        tg.ready();
+        const e = tg.platform === 'unknown' || tg.initDataUnsafe.user?.is_bot;
+        if (e) {
+            setError(e);
+        }
+        tg.onEvent("themeChanged", () => setMode(tg.colorScheme));
+        return () => console.log('---> App UNMOUNTED');
+    }, []);
+
+    const theme = React.useMemo(
+        () => createTheme({
+            palette: {
+                mode,
+                primary: {
+                    main: tg?.themeParams.button_color ?? '#1976d2',
+                    dark: tg?.themeParams.button_color ?? '#1565c0'
+                },
+                background: {
+                    default: tg?.themeParams.bg_color ?? '#fff',
+                    paper: tg?.themeParams.secondary_bg_color ?? '#fff'
+                },
+            },
+        }),
+        [mode],
+    );
+
     return (
-        <div className="App">
-            <div>
-                <a href="https://vitejs.dev" target="_blank">
-                    <img src={viteLogo} className="logo" alt="Vite logo"/>
-                </a>
-                <a href="https://reactjs.org" target="_blank">
-                    <img src={reactLogo} className="logo react" alt="React logo"/>
-                </a>
-            </div>
-            <h1>Vite + React</h1>
-            <h3>{import.meta.env.VITE_TEST}</h3>
-            <div className="card">
-                <button onClick={() => setCount((count) => count + 1)}>
-                    count is {count}
-                </button>
-                <p>
-                    Edit <code>src/App.tsx</code> and save to test HMR
-                </p>
-            </div>
-            <p className="read-the-docs">
-                Click on the Vite and React logos to learn more
-            </p>
-        </div>
+        <>
+            {
+                error ? (<StartError/>) :
+                    <ThemeProvider theme={theme}>
+                        <CssBaseline/>
+                        <AppContent/>
+                    </ThemeProvider>
+            }
+        </>
     )
 }
 
