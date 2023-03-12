@@ -6,7 +6,7 @@ on:
       - main
       
 env:
-  VITE_TEST: ${{ secrets.VITE_TEST }}
+  VITE_TEST: ${{secrets.TEST_KEY}}
   
 jobs:
   build:
