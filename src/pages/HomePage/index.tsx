@@ -1,6 +1,8 @@
 import React, {useContext, useEffect} from 'react';
 import {Typography} from "@mui/material";
-import {AuthContext} from "../providers/AuthProvider";
+import {AuthContext} from "../../providers/AuthProvider";
+import GeneralCard from "./components/GeneralCard";
+import DeliveryCard from "./components/DeliveryCard";
 
 const HomePage = () => {
 
@@ -13,8 +15,8 @@ const HomePage = () => {
 
     return (
         <>
-            <Typography>Home Page</Typography>
-            <Typography>{user?.email}</Typography>
+            <GeneralCard/>
+            <DeliveryCard/>
         </>
     );
 };

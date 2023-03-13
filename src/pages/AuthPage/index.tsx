@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import {useEffect, useState} from "react";
 import {Container, Tab, Tabs, Typography} from "@mui/material";
 import Login from "./component/Login";
+import SignUp from "./component/SignUp";
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -52,16 +53,16 @@ export default function AuthPage() {
     return (
         <Box sx={{width: '100%'}}>
             <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
-                <Tabs value={value} onChange={handleChange} >
+                <Tabs value={value} onChange={handleChange}>
                     <Tab label="Вход" {...a11yProps(0)} sx={{width: '50%'}}/>
                     <Tab label="Регистрация" {...a11yProps(1)} sx={{width: '50%'}}/>
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
-                <Login />
+                <Login/>
             </TabPanel>
             <TabPanel value={value} index={1}>
-               В разработке
+                <SignUp/>
             </TabPanel>
         </Box>
     );

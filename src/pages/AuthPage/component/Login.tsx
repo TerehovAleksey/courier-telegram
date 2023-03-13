@@ -6,11 +6,9 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Container from "@mui/material/Container";
 import {getAuth, signInWithEmailAndPassword} from "firebase/auth";
+import {EMAIL_REGEX, PWD_REGEX} from "../../../../constants";
 
 const tg = window.Telegram.WebApp;
-
-const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%_]).{8,24}$/;
 
 const Login = () => {
 
@@ -33,13 +31,14 @@ const Login = () => {
     }, []);
 
     useEffect(() => {
-        tg.MainButton.onClick(signIn);
+        tg.MainButton.onClick(login);
         return () => {
-            tg.BackButton.offClick(signIn);
+            tg.MainButton.offClick(login);
         };
     }, [email, password]);
 
-    const signIn = useCallback(() => {
+    const login = () => {
+        console.log('login called');
         const e1 = checkEmail(email);
         const e2 = checkPassword(password);
         if (e1 && e2) {
@@ -49,14 +48,14 @@ const Login = () => {
                 })
                 .catch(error => {
                     if (error.code === 'auth/user-not-found') {
-                        //
+                        tg.showAlert('Пользователь не найден');
                     } else if (error.code === 'auth/wrong-password') {
-                        //
+                        tg.showAlert('Пароль не подходит');
                     }
                     console.log(error);
                 });
         }
-    }, [email, password]);
+    }
 
     function onChangeEmail(e: React.ChangeEvent<HTMLInputElement>) {
         const value = e.target.value

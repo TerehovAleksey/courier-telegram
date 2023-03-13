@@ -15,9 +15,9 @@ interface IMenu {
 }
 
 const menu: IMenu[] = [
-    {index: 0, path: "/courier-telegram/", label: "Home", icon: <HomeIcon/>},
-    {index: 1, path: "/courier-telegram/history", label: "History", icon: <HistoryIcon/>},
-    {index: 2, path: "/courier-telegram/settings", label: "Settings", icon: <TuneIcon/>},
+    {index: 0, path: "/courier-telegram/", label: "Главная", icon: <HomeIcon/>},
+    {index: 1, path: "/courier-telegram/history", label: "История", icon: <HistoryIcon/>},
+    {index: 2, path: "/courier-telegram/settings", label: "Параметры", icon: <TuneIcon/>},
 ];
 
 const AppMenu = () => {

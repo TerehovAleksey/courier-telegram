@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {auth} from './firebase/firebase';
+import {auth, settingsSubscriber} from './firebase/firebase';
 import {User} from "firebase/auth";
 import {AuthProvider} from "./providers/AuthProvider";
 import {Route, Routes} from "react-router-dom";
@@ -10,22 +10,36 @@ import HistoryPage from "./pages/HistoryPage";
 import SettingsPage from "./pages/SettingsPage";
 import PageLoader from './components/PageLoader';
 import AuthPage from "./pages/AuthPage";
+import {ISettings} from "./models/ISettings";
+import {SettingsProvider} from "./providers/SettingsProvider";
 
 const AppContent = () => {
 
     const [user, setUser] = useState<User | null | undefined>(undefined);
+    const [settings, setSettings] = useState<ISettings | null>(null);
 
     useEffect(() => {
-        console.log('---> AppContent MOUNTED');
+        console.log('---> subscribe to user');
         const unsubscribe = auth.onAuthStateChanged(user => {
             console.log(user);
             setUser(user);
         });
         return () => {
-            console.log('---> AppContent UNMOUNTED')
+            console.log('---> unsubscribe from user')
             unsubscribe();
         }
     }, []);
+
+    useEffect(() => {
+        if (user) {
+            console.log('---> subscribe to settings');
+            const unsubscribe = settingsSubscriber(user.uid, settings => setSettings(settings));
+            return () => {
+                console.log('---> unsubscribe from settings');
+                unsubscribe();
+            };
+        }
+    }, [user]);
 
     return (
         <>
@@ -33,16 +47,18 @@ const AppContent = () => {
                 user === undefined ?
                     <PageLoader/> :
                     <AuthProvider value={user}>
-                        <Routes>
-                            <Route path="/courier-telegram/" element={<PageLayout/>}>
-                                <Route index element={<HomePage/>}/>
-                                <Route path="history" element={<HistoryPage/>}/>
-                                <Route path="settings" element={<SettingsPage/>}/>
-                            </Route>
-                            <Route path="/courier-telegram/auth" element={<EmptyLayout/>}>
-                                <Route index element={<AuthPage/>}/>
-                            </Route>
-                        </Routes>
+                        <SettingsProvider value={settings}>
+                            <Routes>
+                                <Route path="/courier-telegram/" element={<PageLayout/>}>
+                                    <Route index element={<HomePage/>}/>
+                                    <Route path="history" element={<HistoryPage/>}/>
+                                    <Route path="settings" element={<SettingsPage/>}/>
+                                </Route>
+                                <Route path="/courier-telegram/auth" element={<EmptyLayout/>}>
+                                    <Route index element={<AuthPage/>}/>
+                                </Route>
+                            </Routes>
+                        </SettingsProvider>
                     </AuthProvider>
             }
         </>
