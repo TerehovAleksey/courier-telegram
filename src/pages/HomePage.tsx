@@ -1,7 +1,10 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {Typography} from "@mui/material";
+import {AuthContext} from "../providers/AuthProvider";
 
 const HomePage = () => {
+
+    const user = useContext(AuthContext);
 
     useEffect(() => {
         console.log('--> HomePage MOUNTED');
@@ -9,7 +12,10 @@ const HomePage = () => {
     }, []);
 
     return (
-        <Typography>Home Page</Typography>
+        <>
+            <Typography>Home Page</Typography>
+            <Typography>{user?.email}</Typography>
+        </>
     );
 };
 

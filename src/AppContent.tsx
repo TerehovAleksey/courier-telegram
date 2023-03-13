@@ -4,15 +4,16 @@ import {User} from "firebase/auth";
 import {AuthProvider} from "./providers/AuthProvider";
 import {Route, Routes} from "react-router-dom";
 import PageLayout from "./layouts/PageLayout";
-import SignInPage from "./pages/SignInPage";
 import HomePage from "./pages/HomePage";
 import EmptyLayout from "./layouts/EmptyLayout";
 import HistoryPage from "./pages/HistoryPage";
 import SettingsPage from "./pages/SettingsPage";
+import PageLoader from './components/PageLoader';
+import AuthPage from "./pages/AuthPage";
 
 const AppContent = () => {
 
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<User | null | undefined>(undefined);
 
     useEffect(() => {
         console.log('---> AppContent MOUNTED');
@@ -26,21 +27,25 @@ const AppContent = () => {
         }
     }, []);
 
-    //const u: User = {};
-
     return (
-        <AuthProvider value={user}>
-            <Routes>
-                <Route path="/courier-telegram/" element={<PageLayout/>}>
-                    <Route index element={<HomePage/>}/>
-                    <Route path="history" element={<HistoryPage/>}/>
-                    <Route path="settings" element={<SettingsPage/>}/>
-                </Route>
-                <Route path="/courier-telegram/auth" element={<EmptyLayout/>}>
-                    <Route index element={<SignInPage/>}/>
-                </Route>
-            </Routes>
-        </AuthProvider>
+        <>
+            {
+                user === undefined ?
+                    <PageLoader/> :
+                    <AuthProvider value={user}>
+                        <Routes>
+                            <Route path="/courier-telegram/" element={<PageLayout/>}>
+                                <Route index element={<HomePage/>}/>
+                                <Route path="history" element={<HistoryPage/>}/>
+                                <Route path="settings" element={<SettingsPage/>}/>
+                            </Route>
+                            <Route path="/courier-telegram/auth" element={<EmptyLayout/>}>
+                                <Route index element={<AuthPage/>}/>
+                            </Route>
+                        </Routes>
+                    </AuthProvider>
+            }
+        </>
     );
 };
 

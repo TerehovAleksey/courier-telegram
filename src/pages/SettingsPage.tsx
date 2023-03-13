@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
-import {Typography} from "@mui/material";
+import {Button, Typography} from "@mui/material";
+import {auth} from "../firebase/firebase";
 
 const SettingsPage = () => {
 
@@ -9,7 +10,10 @@ const SettingsPage = () => {
     }, []);
 
     return (
+        <>
         <Typography>Settings Page</Typography>
+        <Button onClick={()=> auth.signOut()}>Выход</Button>
+        </>
     );
 };
 

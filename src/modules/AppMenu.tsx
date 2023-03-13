@@ -2,9 +2,9 @@ import React, {useEffect} from 'react';
 import Box from '@mui/material/Box';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import RestoreIcon from '@mui/icons-material/Restore';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import HomeIcon from '@mui/icons-material/Home';
+import HistoryIcon from '@mui/icons-material/History';
+import TuneIcon from '@mui/icons-material/Tune';
 import {useLocation, useNavigate} from "react-router-dom";
 
 interface IMenu {
@@ -15,9 +15,9 @@ interface IMenu {
 }
 
 const menu: IMenu[] = [
-    {index: 0, path: "/courier-telegram/", label: "Home", icon: <RestoreIcon/>},
-    {index: 1, path: "/courier-telegram/history", label: "History", icon: <FavoriteIcon/>},
-    {index: 2, path: "/courier-telegram/settings", label: "Settings", icon: <LocationOnIcon/>},
+    {index: 0, path: "/courier-telegram/", label: "Home", icon: <HomeIcon/>},
+    {index: 1, path: "/courier-telegram/history", label: "History", icon: <HistoryIcon/>},
+    {index: 2, path: "/courier-telegram/settings", label: "Settings", icon: <TuneIcon/>},
 ];
 
 const AppMenu = () => {
@@ -32,7 +32,7 @@ const AppMenu = () => {
     },[]);
 
     useEffect(() => {
-        const path = "/" + loc.pathname.split("/")[1];
+        const path = loc.pathname;
         const index = menu.find(m => m.path === path)?.index ?? 0;
         setValue(index);
     }, [loc]);
