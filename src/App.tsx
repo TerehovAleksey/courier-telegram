@@ -7,6 +7,9 @@ import {
 } from "@mui/material";
 import StartError from "./components/StartError";
 import AppContent from "./AppContent";
+import {LocalizationProvider, ruRU} from '@mui/x-date-pickers';
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs'
+import 'dayjs/locale/ru.js';
 
 const tg = window.Telegram.WebApp;
 
@@ -48,8 +51,14 @@ function App() {
             {
                 error ? (<StartError/>) :
                     <ThemeProvider theme={theme}>
-                        <CssBaseline/>
-                        <AppContent/>
+                        {/*необходимая локализация для DateTimeInputs*/}
+                        <LocalizationProvider
+                            dateAdapter={AdapterDayjs}
+                            adapterLocale="ru"
+                            localeText={ruRU.components.MuiLocalizationProvider.defaultProps.localeText}>
+                            <CssBaseline/>
+                            <AppContent/>
+                        </LocalizationProvider>
                     </ThemeProvider>
             }
         </>

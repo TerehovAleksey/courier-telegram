@@ -3,6 +3,7 @@ import {Navigate, Outlet} from "react-router-dom";
 import {AppBar, Container} from "@mui/material";
 import {AuthContext} from "../providers/AuthProvider";
 import AppMenu from "../modules/AppMenu";
+import Box from "@mui/material/Box";
 
 const PageLayout = () => {
 
@@ -15,7 +16,9 @@ const PageLayout = () => {
 
     return (
         <Container>
-            {user ? <Outlet/> : <Navigate to="/courier-telegram/auth" />}
+            <Box sx={{mb: '56px', py: 2}}>
+                {user ? <Outlet/> : <Navigate to="/courier-telegram/auth" />}
+            </Box>
             <AppBar position="fixed" sx={{top: "auto", bottom: 0}}>
                 <AppMenu/>
             </AppBar>

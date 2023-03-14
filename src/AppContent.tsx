@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {auth, settingsSubscriber} from './firebase/firebase';
+import {auth} from './firebase/firebase';
 import {User} from "firebase/auth";
 import {AuthProvider} from "./providers/AuthProvider";
 import {Route, Routes} from "react-router-dom";
@@ -12,6 +12,10 @@ import PageLoader from './components/PageLoader';
 import AuthPage from "./pages/AuthPage";
 import {ISettings} from "./models/ISettings";
 import {SettingsProvider} from "./providers/SettingsProvider";
+import {settingsSubscriber} from "./firebase/settingsApi";
+import StartDayPage from "./pages/StartDayPage";
+import EndDayPage from "./pages/EndDayPage";
+import DeliveryPage from "./pages/DeliveryPage";
 
 const AppContent = () => {
 
@@ -51,6 +55,9 @@ const AppContent = () => {
                             <Routes>
                                 <Route path="/courier-telegram/" element={<PageLayout/>}>
                                     <Route index element={<HomePage/>}/>
+                                    <Route path="start" element={<StartDayPage/>}/>
+                                    <Route path="delivery" element={<DeliveryPage/>}/>
+                                    <Route path="end" element={<EndDayPage/>}/>
                                     <Route path="history" element={<HistoryPage/>}/>
                                     <Route path="settings" element={<SettingsPage/>}/>
                                 </Route>

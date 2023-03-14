@@ -1,15 +1,47 @@
 import React from 'react';
-import {Button, Card, CardActions, CardContent, CardHeader, Typography} from "@mui/material";
+import {
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    CardHeader,
+    List,
+    ListItem,
+    ListItemText,
+    Typography
+} from "@mui/material";
+import {useNavigate} from "react-router-dom";
+import {IDay} from "../../../models/IDay";
 
-const DeliveryCard = () => {
+type DeliveryCardProps = {
+    day: IDay | null;
+}
+
+
+const DeliveryCard = ({day}: DeliveryCardProps) => {
+
+    const nav = useNavigate();
+
     return (
         <Card sx={{my: 2}}>
             <CardHeader title="Доставки"/>
             <CardContent>
-                <Typography>Доставок пока нет</Typography>
+                {(day === null || day.deliveries.length === 0) ?
+                    <Typography>Доставок пока нет</Typography> :
+                    <List>
+                        {
+                            day.deliveries.map(d =>
+                                <ListItem key={d.id}>
+                                    <ListItemText primary={`#${d.number} ${d.dateTime.toLocaleTimeString()}`}
+                                                  secondary={d.address}/>
+                                </ListItem>
+                            )
+                        }
+                    </List>
+                }
             </CardContent>
             <CardActions>
-                <Button size="small">Добавить</Button>
+                <Button size="small" onClick={() => nav('delivery')}>Добавить</Button>
             </CardActions>
         </Card>
     );
