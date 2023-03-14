@@ -9,7 +9,7 @@ export const getCurrentDay = (userId: string) => {
         const data = snapshot.docs[0]?.data();
         return data ? {
             ...data, startTime: data.startTime.toDate(), endTime: data.endTime?.toDate(),
-            deliveries: data.deliveries.map(d => ({...d, dateTime: d.dateTime.toDate()}))
+            deliveries: data.deliveries.map((d: { dateTime: { toDate: () => any; }; }) => ({...d, dateTime: d.dateTime.toDate()}))
         } as IDay : null;
     });
 }
