@@ -1,16 +1,14 @@
-import { App } from 'antd';
-import {tgEnabled} from "../helpers/telegram";
-
-const tg = window.Telegram.WebApp;
+import {App} from 'antd';
+import {tgAlert, tgConfirm, tgEnabled} from "../helpers/telegram";
 
 export function useAdapter() {
 
-    const {modal } = App.useApp();
+    const {modal, notification} = App.useApp();
 
     const showAlert = (message: string, callback?: () => void | undefined) => {
-        if(tgEnabled){
-            tg.showAlert(message, callback);
-        }else{
+        if (tgEnabled) {
+            tgAlert(message, callback);
+        } else {
             modal.warning({
                 content: message,
                 afterClose: callback
@@ -19,21 +17,29 @@ export function useAdapter() {
     };
 
     const showConfirm = (message: string, callback: () => void) => {
-        if(tgEnabled){
-            tg.showConfirm(message, ok => {
-                if (ok){
+        if (tgEnabled) {
+            tgConfirm(message, ok => {
+                if (ok) {
                     callback();
                 }
             })
-        }else{
+        } else {
             modal.confirm({
                 content: message,
-                onOk: callback,
+                onOk: () => callback(),
                 okText: 'Да',
                 cancelText: 'Отмена'
             });
         }
     }
 
-    return {showAlert, showConfirm};
+    const showNotification = (message: string) => {
+        if (tgEnabled) {
+            tgAlert(message);
+        } else {
+            notification.success({message});
+        }
+    }
+
+    return {showAlert, showConfirm, showNotification};
 }

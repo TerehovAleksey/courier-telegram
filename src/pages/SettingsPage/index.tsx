@@ -16,7 +16,7 @@ const SettingsPage = () => {
             <GeneralCard settings={settings}/>
             <TemplatesCard settings={settings}/>
             <Button type="text" danger style={{width: '100%'}}
-                    onClick={() => showConfirm('Вы уверены, что хотите выйти?', auth.signOut)}>Выход</Button>
+                    onClick={() => showConfirm('Вы уверены, что хотите выйти?', () => auth.signOut())}>Выход</Button>
         </Space>
     );
 };

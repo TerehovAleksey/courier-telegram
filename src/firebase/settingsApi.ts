@@ -48,11 +48,6 @@ const createSettings = (userId: string) => {
     return setDoc(doc(db,'Settings', userId), data);
 }
 
-// export const getSettings = (userId: string) => {
-//     const settingsDoc = doc(db, `Settings/${userId}`);
-//     return getDoc(settingsDoc).then(snapshot => snapshot.data());
-// }
-
 export const settingsSubscriber = (userId: string, onSettingsChanged: (settings: ISettings | null) => void,) => {
     const settingsDoc = doc(db, `Settings/${userId}`);
     return onSnapshot(settingsDoc, (snapshot) => {
@@ -62,3 +57,5 @@ export const settingsSubscriber = (userId: string, onSettingsChanged: (settings:
         onSettingsChanged(snapshot.data() as ISettings ?? null)
     });
 }
+
+export const updateSettings = (userId: string, settings: ISettings) => setDoc(doc(db,'Settings', userId), settings);

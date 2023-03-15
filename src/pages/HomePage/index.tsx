@@ -6,9 +6,13 @@ import {getCurrentDay} from "../../firebase/dayApi";
 import {IDay} from "../../models/IDay";
 import PageLoader from "../../components/PageLoader";
 import StartDayCard from "./components/StartDayCard";
-import {Space} from "antd";
+import {Button, Space} from "antd";
+import {tgEnabled} from "../../helpers/telegram";
+import {useNavigate} from "react-router-dom";
 
 const HomePage = () => {
+
+    const nav = useNavigate();
 
     const user = useContext(AuthContext);
     const [isLoading, setIsLoading] = useState(true);
@@ -26,7 +30,14 @@ const HomePage = () => {
     return (
         <Space direction="vertical" style={{display: 'flex'}}>
             {isLoading && <PageLoader/>}
-            {!isLoading && day == null && <StartDayCard/>}
+            {!isLoading && day == null &&
+                <>
+                    <StartDayCard/>
+                    {!tgEnabled && <div style={{textAlign: 'center'}}>
+                        <Button type="primary" size="large" onClick={()=>nav('start')}>Начать</Button>
+                    </div>}
+                </>
+            }
             {!isLoading && day != null &&
                 <>
                     <GeneralCard day={day}/>
