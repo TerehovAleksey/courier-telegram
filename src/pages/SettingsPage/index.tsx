@@ -1,24 +1,18 @@
-import React, {useContext, useEffect} from 'react';
-import {Button, Typography} from "@mui/material";
+import React, {useContext} from 'react';
 import {auth} from "../../firebase/firebase";
 import {SettingsContext} from "../../providers/SettingsProvider";
 import GeneralCard from "./components/GeneralCard";
+import {Button, Space} from "antd";
 
 const SettingsPage = () => {
 
     const settings = useContext(SettingsContext);
 
-    useEffect(() => {
-        console.log('--> SettingsPage MOUNTED');
-        return () => console.log('--> SettingsPage UNMOUNTED');
-    }, []);
-
-
     return (
-        <>
+        <Space direction="vertical" style={{display: 'flex'}}>
             <GeneralCard settings={settings}/>
-            <Button onClick={() => auth.signOut()}>Выход</Button>
-        </>
+            <Button type="primary" onClick={() => auth.signOut()}>Выход</Button>
+        </Space>
     );
 };
 

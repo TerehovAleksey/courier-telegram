@@ -6,17 +6,13 @@ import {getCurrentDay} from "../../firebase/dayApi";
 import {IDay} from "../../models/IDay";
 import PageLoader from "../../components/PageLoader";
 import StartDayCard from "./components/StartDayCard";
+import {Space} from "antd";
 
 const HomePage = () => {
 
     const user = useContext(AuthContext);
     const [isLoading, setIsLoading] = useState(true);
     const [day, setDay] = useState<IDay | null>(null);
-
-    useEffect(() => {
-        console.log('--> HomePage MOUNTED');
-        return () => console.log('--> HomePage UNMOUNTED');
-    }, []);
 
     useEffect(() => {
         if (user) {
@@ -28,7 +24,7 @@ const HomePage = () => {
     }, [user]);
 
     return (
-        <>
+        <Space direction="vertical" style={{display: 'flex'}}>
             {isLoading && <PageLoader/>}
             {!isLoading && day == null && <StartDayCard/>}
             {!isLoading && day != null &&
@@ -37,7 +33,7 @@ const HomePage = () => {
                     <DeliveryCard day={day}/>
                 </>}
             {}
-        </>
+        </Space>
     );
 };
 

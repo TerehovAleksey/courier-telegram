@@ -8,7 +8,7 @@ export const getCurrentDay = (userId: string) => {
     return getDocs(q).then(snapshot => {
         const data = snapshot.docs[0]?.data();
         return data ? {
-            ...data, startTime: data.startTime.toDate(), endTime: data.endTime?.toDate(),
+            ...data, startTime: data.startTime.toDate(), endTime: data.endTime?.toDate() ?? null,
             deliveries: data.deliveries.map((d: { dateTime: { toDate: () => any; }; }) => ({...d, dateTime: d.dateTime.toDate()}))
         } as IDay : null;
     });

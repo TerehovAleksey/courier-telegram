@@ -1,42 +1,53 @@
-import React from 'react';
-import {Button, Card, CardActions, CardContent, CardHeader, Typography} from "@mui/material";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
+import React, {useEffect} from 'react';
 import {ISettings} from "../../../models/ISettings";
+import {Button, Card, Form, InputNumber, Space} from "antd";
+
+interface ISettingsForm {
+    fuelCost: number;
+    fuelExpenses: number;
+}
 
 type GeneralCardProps = {
     settings: ISettings | null
 }
 
 const GeneralCard = ({settings}: GeneralCardProps) => {
+
+    const [form] = Form.useForm();
+
+    useEffect(()=>{
+        form.setFieldsValue({"fuelCost": settings?.fuelCost ?? 0, "fuelExpenses": settings?.fuelExpenses ?? 0});
+    },[settings]);
+
+    const onFormSubmit = (values: ISettingsForm) => {
+        console.log(values);
+    }
+
     return (
-        <Card sx={{my: 2}}>
-            <CardHeader title="Основные параметры"/>
-            <CardContent>
-                <Box component="form" noValidate>
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="fuelCost"
-                        label="Стоимость топлива"
-                        name="fuelCost"
-                        value={settings?.fuelCost ?? '0'}
-                    />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="fuelExpenses"
-                        label="Расход топлива"
-                        name="fuelExpenses"
-                        value={settings?.fuelExpenses ?? '0'}
-                    />
-                </Box>
-            </CardContent>
-            <CardActions>
-                <Button size="small">Обновить</Button>
-            </CardActions>
+        <Card title="Основные параметры" bordered={false}>
+            <Space direction="vertical" style={{display: 'flex'}}>
+                <Form<ISettingsForm> form={form} layout="vertical" onFinish={onFormSubmit}>
+                    <Form.Item label="Стоимость топлива" name="fuelCost"
+                               rules={[{required: true, message: 'Укажите стоимость топлива'}]}>
+                        <InputNumber
+                            size="large"
+                            min="0"
+                            step="0.01"
+                            style={{minWidth: '100%'}}
+                        />
+                    </Form.Item>
+                    <Form.Item label="Расход топлива" name="fuelExpenses"
+                               rules={[{required: true, message: 'Укажите расход топлива'}]}>
+                        <InputNumber
+                            size="large"
+                            min="0"
+                            step="0.01"
+                            style={{minWidth: '100%'}}
+                        />
+                    </Form.Item>
+                </Form>
+                <Button htmlType="submit" type="primary">Обновить</Button>
+            </Space>
         </Card>
     );
 };

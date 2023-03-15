@@ -1,28 +1,29 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext} from 'react';
 import {Navigate, Outlet} from "react-router-dom";
-import {AppBar, Container} from "@mui/material";
 import {AuthContext} from "../providers/AuthProvider";
-import AppMenu from "../modules/AppMenu";
-import Box from "@mui/material/Box";
+import {Layout} from "antd";
+import PageContainer from "../components/PageContainer";
+import dayjs from "dayjs";
+import MainMenu from "../components/MainMenu";
+
+const {Header, Content, Footer} = Layout;
 
 const PageLayout = () => {
 
     const user = useContext(AuthContext);
 
-    useEffect(()=>{
-        console.log('--> PageLayout MOUNTED');
-        return () => console.log('--> PageLayout UNMOUNTED');
-    },[]);
-
     return (
-        <Container>
-            <Box sx={{mb: '56px', py: 2}}>
-                {user ? <Outlet/> : <Navigate to="/courier-telegram/auth" />}
-            </Box>
-            <AppBar position="fixed" sx={{top: "auto", bottom: 0}}>
-                <AppMenu/>
-            </AppBar>
-        </Container>
+        <Layout style={{minHeight: '100vh'}}>
+            <Header style={{position: 'sticky', top: 0, zIndex: 1, width: '100%', padding: 0, display: 'flex'}}>
+                <MainMenu/>
+            </Header>
+            <Content>
+                <PageContainer>
+                    {user ? <Outlet/> : <Navigate to="/courier-telegram/login"/>}
+                </PageContainer>
+            </Content>
+            <Footer style={{textAlign: 'center'}}>Courier ©{dayjs().year()}</Footer>
+        </Layout>
     );
 };
 
