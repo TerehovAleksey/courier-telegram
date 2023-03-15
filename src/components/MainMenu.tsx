@@ -1,9 +1,12 @@
 import React, {useState} from 'react';
-import {Menu, MenuProps} from "antd";
+import {Menu} from "antd";
 import {HistoryOutlined, HomeOutlined, SettingOutlined} from "@ant-design/icons";
 import {useNavigate} from "react-router-dom";
+import type { MenuProps } from 'antd/es/menu';
 
-const items: MenuProps['items'] = [
+type MenuItem = Required<MenuProps>['items'][number];
+
+const items: MenuItem[] = [
     {
         label: 'Главная',
         key: '/courier-telegram',
@@ -32,8 +35,13 @@ const MainMenu = () => {
     };
 
     return (
-        <Menu style={{margin: '0 auto'}} mode="horizontal" items={items} theme="dark"
-              onClick={onClick} selectedKeys={[current]}/>
+        <Menu style={{margin: '0 auto'}} mode="horizontal"
+              items={items}
+              defaultSelectedKeys={['/courier-telegram']}
+              theme="dark"
+              onClick={onClick}
+              selectedKeys={[current]}
+        />
     );
 };
 
