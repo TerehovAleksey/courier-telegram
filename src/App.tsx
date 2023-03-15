@@ -20,6 +20,9 @@ import {User} from "firebase/auth";
 import {ISettings} from "./models/ISettings";
 import {auth} from "./firebase/firebase";
 import {settingsSubscriber} from "./firebase/settingsApi";
+import {tgEnabled, tgUser} from "./helpers/telegram";
+import {setTgUser} from "./firebase/userApi";
+import TemplatePage from "./pages/TemplatePage";
 
 function App() {
 
@@ -35,6 +38,9 @@ function App() {
 
     useEffect(() => {
         if (user) {
+            if (tgEnabled && tgUser) {
+                setTgUser(user.uid, tgUser);
+            }
             const unsubscribe = settingsSubscriber(user.uid, settings => setSettings(settings));
             return () => unsubscribe();
         }
@@ -57,6 +63,7 @@ function App() {
                                             <Route path="end" element={<EndDayPage/>}/>
                                             <Route path="history" element={<HistoryPage/>}/>
                                             <Route path="settings" element={<SettingsPage/>}/>
+                                            <Route path="settings/template" element={<TemplatePage/>}/>
                                         </Route>
                                         <Route path="/courier-telegram/" element={<EmptyLayout/>}>
                                             <Route path="login" element={<LoginPage/>}/>

@@ -18,5 +18,22 @@ export function useAdapter() {
         }
     };
 
-    return {showAlert};
+    const showConfirm = (message: string, callback: () => void) => {
+        if(tgEnabled){
+            tg.showConfirm(message, ok => {
+                if (ok){
+                    callback();
+                }
+            })
+        }else{
+            modal.confirm({
+                content: message,
+                onOk: callback,
+                okText: 'Да',
+                cancelText: 'Отмена'
+            });
+        }
+    }
+
+    return {showAlert, showConfirm};
 }
