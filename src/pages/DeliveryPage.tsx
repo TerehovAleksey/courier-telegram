@@ -1,19 +1,5 @@
-import React, {ChangeEvent, useContext, useEffect, useState} from 'react';
-import {
-    Button,
-    Card,
-    CardActions,
-    CardContent,
-    CardHeader,
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select
-} from "@mui/material";
-import Box from "@mui/material/Box";
-import {MobileDateTimePicker} from "@mui/x-date-pickers";
-import dayjs from "dayjs";
-import TextField from "@mui/material/TextField";
+import React, {useContext, useEffect, useState} from 'react';
+import dayjs, {Dayjs} from "dayjs";
 import {IDelivery} from "../models/IDelivery";
 import uuid from "react-uuid";
 import {SettingsContext} from "../providers/SettingsProvider";
@@ -22,32 +8,47 @@ import {IDay} from "../models/IDay";
 import {getCurrentDay, updateDay} from "../firebase/dayApi";
 import {ITemplate} from "../models/ITemplate";
 import {useNavigate} from "react-router-dom";
+import {Button, Card, DatePicker, Form, Input, InputNumber, Select, Space, TimePicker} from "antd";
+import {tgBackButton, tgButton, tgEnabled} from "../helpers/telegram";
+
+interface IDeliveryForm {
+    date: Dayjs;
+    time: Dayjs;
+    number: string | undefined;
+    address: string | undefined;
+    cost: number;
+    paymentId: string;
+    typeId: string;
+    note: string | undefined;
+}
 
 const DeliveryPage = () => {
 
     const nav = useNavigate();
-
     const settings = useContext(SettingsContext);
     const user = useContext(AuthContext);
+    const [form] = Form.useForm();
 
     const [day, setDay] = useState<IDay | null>(null);
     const [template, setTemplate] = useState<ITemplate | null>(null);
 
-    const [time, setTime] = useState<dayjs.Dayjs>(dayjs());
-    const [cost, setCost] = useState('0');
-    const [isCostError, setIsCostError] = useState(false);
-    const [paymentTypeId, setPaymentTypeId] = useState('');
-    const [deliveryTypeId, setDeliveryTypeId] = useState('');
-    const [delivery, setDelivery] = useState<IDelivery>({
-        id: uuid(),
-        cost: 0,
-        dateTime: new Date(),
-        deliveryType: null,
-        paymentType: null,
-        address: null,
-        number: null,
-        note: null,
-    });
+    const goBack = () => nav(-1);
+
+    useEffect(() => {
+        if (tgEnabled) {
+            tgButton.text = 'Добавить доставку';
+            tgButton.onClick(form.submit);
+            tgButton.show();
+            tgBackButton.onClick(goBack);
+            tgBackButton.show();
+            return () => {
+                tgButton.offClick(form.submit);
+                tgButton.hide();
+                tgBackButton.offClick(goBack);
+                tgBackButton.hide();
+            }
+        }
+    }, []);
 
     useEffect(() => {
         if (user) {
@@ -60,32 +61,33 @@ const DeliveryPage = () => {
                     if (!pId) {
                         pId = template.paymentTypes[0]?.id;
                     }
-                    setPaymentTypeId(pId ?? null);
                     let dId = template.deliveryTypes.find(t => t.isDefault)?.id;
                     if (!dId) {
                         dId = template.deliveryTypes[0]?.id;
                     }
-                    setDeliveryTypeId(dId ?? null);
+                    form.setFieldsValue({"date": dayjs(), "time": dayjs(), "cost": 0, "paymentId": pId, "typeId": dId});
                 }
             });
         }
     }, [user]);
 
-    const onCostChanged = (e: ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        const num = Number.parseFloat(value);
-        setCost(value);
-        setIsCostError(isNaN(num) || num < 0);
-    }
+    const onFormSubmit = (values: IDeliveryForm) => {
+        let dateTime: Dayjs = dayjs(values.date);
+        dateTime = dateTime.set("hour", values.time.hour());
+        dateTime = dateTime.set("minutes", values.time.minute());
 
-    const addDelivery = () => {
-        delivery.dateTime = time.toDate();
-        delivery.cost = Number.parseFloat(cost);
-        delivery.deliveryType = template?.deliveryTypes.find(t => t.id == deliveryTypeId) ?? null;
-        delivery.paymentType = template?.paymentTypes.find(t => t.id == paymentTypeId) ?? null;
+        const delivery: IDelivery = {
+            id: uuid(),
+            number: values.number ?? null,
+            address: values.address ?? null,
+            cost: values.cost,
+            dateTime: dateTime.toDate(),
+            note: values.note ?? null,
+            paymentType: template?.paymentTypes.find(t => t.id === values.paymentId) ?? null,
+            deliveryType: template?.deliveryTypes.find(t => t.id === values.typeId) ?? null,
+        };
 
-        if (day && user){
-            //TODO: куда бы логику обновления дня
+        if (day && user) {
             day.count++;
             day.dayCost += delivery.deliveryType?.cost ?? 0;
             if (delivery.paymentType?.addToDayCash) {
@@ -101,93 +103,52 @@ const DeliveryPage = () => {
     }
 
     return (
-        <Card>
-            <CardHeader title="Доставка"/>
-            <CardContent>
-                <Box>
-                    <FormControl fullWidth margin="normal">
-                        <MobileDateTimePicker ampmInClock={false}
-                                              ampm={false}
-                                              label="Дата и время"
-                                              defaultValue={dayjs()}
-                                              value={time}
-                                              onChange={d => setTime(d ?? dayjs())}/>
-                    </FormControl>
-                    <TextField
-                        type="text"
-                        margin="normal"
-                        fullWidth
-                        id="number"
-                        label="Номер"
-                        name="number"
-                        value={delivery.number ?? ''}
-                        onChange={e => setDelivery(d => ({...d, number: e.target.value}))}
-                    />
-                    <TextField
-                        type="text"
-                        margin="normal"
-                        fullWidth
-                        id="address"
-                        label="Адрес"
-                        name="address"
-                        value={delivery.address ?? ''}
-                        onChange={e => setDelivery(d => ({...d, address: e.target.value}))}
-                    />
-                    <TextField
-                        type="number"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="cash"
-                        label="Сумма"
-                        name="cash"
-                        value={cost}
-                        onChange={onCostChanged}
-                        error={isCostError}
-                    />
-                    <FormControl fullWidth margin="normal">
-                        <InputLabel id="template-select-label">Тип оплаты</InputLabel>
+        <Card title="Доставка" bordered={false}>
+            <Space direction="vertical" style={{display: 'flex'}}>
+                <Form<IDeliveryForm> form={form} layout="vertical" onFinish={onFormSubmit}>
+                    <Form.Item label="Дата" name="date">
+                        <DatePicker size="large" style={{minWidth: '100%'}} inputReadOnly/>
+                    </Form.Item>
+                    <Form.Item label="Время" name="time">
+                        <TimePicker size="large" style={{minWidth: '100%'}} inputReadOnly/>
+                    </Form.Item>
+                    <Form.Item label="Номер" name="number">
+                        <Input size="large"/>
+                    </Form.Item>
+                    <Form.Item label="Адрес" name="address">
+                        <Input size="large"/>
+                    </Form.Item>
+                    <Form.Item label="Сумма" name="cost"
+                               rules={[{required: true, message: 'Укажите сумму за доставку'}]}>
+                        <InputNumber
+                            size="large"
+                            min="0"
+                            step="0.01"
+                            style={{minWidth: '100%'}}
+                        />
+                    </Form.Item>
+                    <Form.Item label="Тип оплаты" name="paymentId"
+                               rules={[{required: true, message: 'Выберете тип оплаты для продолжения'}]}>
                         <Select
-                            labelId="template-select-label"
-                            id="template-select"
-                            label="Тип оплаты"
-                            displayEmpty
-                            value={paymentTypeId}
-                            onChange={e => setPaymentTypeId(e.target.value)}>
-                            {
-                                template?.paymentTypes.map(t => <MenuItem key={t.id} value={t.id}>{t.name}</MenuItem>)
-                            }
-                        </Select>
-                    </FormControl>
-                    <FormControl fullWidth margin="normal">
-                        <InputLabel id="template-select-label">Вид доставки</InputLabel>
+                            size="large"
+                            options={template?.paymentTypes.map(t => ({value: t.id, label: t.name}))}
+                        />
+                    </Form.Item>
+                    <Form.Item label="Вид доставки" name="typeId"
+                               rules={[{required: true, message: 'Выберете вид доставки для продолжения'}]}>
                         <Select
-                            labelId="template-select-label"
-                            id="template-select"
-                            label="Вид доставки"
-                            displayEmpty
-                            value={deliveryTypeId}
-                            onChange={e => setDeliveryTypeId(e.target.value)}>
-                            {
-                                template?.deliveryTypes.map(t => <MenuItem key={t.id} value={t.id}>{t.name}</MenuItem>)
-                            }
-                        </Select>
-                    </FormControl>
-                    <TextField
-                        type="text"
-                        margin="normal"
-                        fullWidth
-                        id="note"
-                        label="Примечание"
-                        name="note"
-                        value={delivery.note ?? ''}
-                        onChange={e => setDelivery(d => ({...d, note: e.target.value}))}
-                    />
-                </Box>
-            </CardContent>
-            <CardActions>
-                <Button variant='outlined' onClick={addDelivery} disabled={isCostError}>Добавить</Button>
-            </CardActions>
+                            size="large"
+                            options={template?.deliveryTypes.map(t => ({value: t.id, label: t.name}))}
+                        />
+                    </Form.Item>
+                    <Form.Item label="Примечание" name="note">
+                        <Input size="large"/>
+                    </Form.Item>
+                    {!tgEnabled && <div style={{textAlign: 'center'}}>
+                        <Button htmlType="submit" type="primary" size="large">Добавить</Button>
+                    </div>}
+                </Form>
+            </Space>
         </Card>
     );
 };

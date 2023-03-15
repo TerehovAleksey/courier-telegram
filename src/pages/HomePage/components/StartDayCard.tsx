@@ -1,20 +1,31 @@
-import React from 'react';
-import {Button, Card, CardActions, CardContent, CardHeader, Typography} from "@mui/material";
+import {Button, Card, Space, Typography} from 'antd';
+import React, {useEffect} from 'react';
 import {useNavigate} from "react-router-dom";
+import {tgButton, tgEnabled} from "../../../helpers/telegram";
 
 const StartDayCard = () => {
 
     const nav = useNavigate();
+    const startDay = () => nav("start");
+
+    useEffect(() => {
+        if (tgEnabled) {
+            tgButton.text = 'Начать день';
+            tgButton.onClick(startDay);
+            tgButton.show();
+            return () => {
+                tgButton.offClick(startDay);
+                tgButton.hide();
+            }
+        }
+    }, []);
 
     return (
-        <Card sx={{my: 2}}>
-            <CardHeader title="Статистика за день"/>
-            <CardContent>
-                <Typography>День ещё не начат</Typography>
-            </CardContent>
-            <CardActions>
-                <Button size="small" onClick={() => nav("start")}>Начать день</Button>
-            </CardActions>
+        <Card title="День ещё не начат!" bordered={false}>
+            <Space direction="vertical">
+                <Typography>Начните день или добавьте готовые данные.</Typography>
+                <Button onClick={() => nav("day")}>Добавить день</Button>
+            </Space>
         </Card>
     );
 };

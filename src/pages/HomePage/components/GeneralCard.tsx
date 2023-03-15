@@ -1,4 +1,4 @@
-import {Button, Card, CardActions, CardContent, CardHeader, Typography} from '@mui/material';
+import {Button, Card, Descriptions, Space} from 'antd';
 import React from 'react';
 import {useNavigate} from "react-router-dom";
 import {IDay} from "../../../models/IDay";
@@ -12,17 +12,16 @@ const GeneralCard = ({day}: GeneralCardProps) => {
     const nav = useNavigate();
 
     return (
-        <Card sx={{my: 2}}>
-            <CardHeader title="Статистика за день"/>
-            <CardContent>
-                <Typography>Начало: {day?.startTime.toLocaleTimeString()}</Typography>
-                <Typography>Доставок: {day?.count}</Typography>
-                <Typography>Заработано: {day?.dayCost.toFixed(2)}</Typography>
-                <Typography>На кармане: {day?.cashMoney}</Typography>
-            </CardContent>
-            <CardActions>
-                <Button size="small" onClick={() => nav("end")}>Закончить день</Button>
-            </CardActions>
+        <Card title="Статистика за день" bordered={false}>
+            <Space direction="vertical" style={{display: 'flex'}}>
+                <Descriptions size="small" column={1}>
+                    <Descriptions.Item label="Начало">{day?.startTime.toLocaleTimeString()}</Descriptions.Item>
+                    <Descriptions.Item label="Доставок">{day?.count}</Descriptions.Item>
+                    <Descriptions.Item label="Заработано">{day?.dayCost.toFixed(2)}</Descriptions.Item>
+                    <Descriptions.Item label="На кармане">{day?.cashMoney}</Descriptions.Item>
+                </Descriptions>
+                <Button type="primary" onClick={() => nav("end")}>Закончить день</Button>
+            </Space>
         </Card>
     );
 };

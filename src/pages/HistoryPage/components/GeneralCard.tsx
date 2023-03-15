@@ -1,13 +1,14 @@
 import React from 'react';
-import {Card, CardContent, CardHeader} from "@mui/material";
+import {Card, Descriptions, Space} from "antd";
 
 const GeneralCard = () => {
     return (
-        <Card>
-            <CardHeader title="Статистика"/>
-            <CardContent>
-                ..
-            </CardContent>
+        <Card title="Статистика" bordered={false}>
+            <Space direction="vertical" style={{display: 'flex'}}>
+                <Descriptions size="small" column={1}>
+                    <Descriptions.Item label="...">...</Descriptions.Item>
+                </Descriptions>
+            </Space>
         </Card>
     );
 };

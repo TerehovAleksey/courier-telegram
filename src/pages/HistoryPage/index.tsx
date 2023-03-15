@@ -1,28 +1,27 @@
 import React, {useEffect} from 'react';
-import {FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 import GeneralCard from "./components/GeneralCard";
+import {Card, Form, Select, Space} from "antd";
+import FilterCard from "./components/FilterCard";
 
 const HistoryPage = () => {
 
-    useEffect(() => {
-        console.log('--> HistoryPage MOUNTED');
-        return () => console.log('--> HistoryPage UNMOUNTED');
-    }, []);
-
     return (
-        <>
-            <FormControl fullWidth margin="normal">
-                <InputLabel id="template-select-label">Шаблон</InputLabel>
-                <Select
-                    labelId="template-select-label"
-                    id="template-select"
-                    label="Шаблон"
-                    displayEmpty>
-                    <MenuItem value={0}>Все шаблоны</MenuItem>
-                </Select>
-            </FormControl>
+        <Space direction="vertical" style={{display: 'flex'}}>
+            <Card>
+                <Form layout="vertical">
+                    <Form.Item label="Шаблон" name="templateId"
+                               rules={[{required: true, message: 'Выберете шаблон'}]}>
+                        <Select
+                            size="large"
+                            onChange={e => console.log(e)}
+                            options={Array(5).fill('item', 0, 5).map((t, i) => ({value: i, label: `${t} ${i}`}))}
+                        />
+                    </Form.Item>
+                </Form>
+            </Card>
             <GeneralCard/>
-        </>
+            <FilterCard/>
+        </Space>
     );
 };
 

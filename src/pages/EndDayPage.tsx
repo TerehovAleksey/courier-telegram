@@ -1,77 +1,64 @@
-import React, {ChangeEvent, useContext, useEffect, useState} from 'react';
-import {
-    Button,
-    Card,
-    CardActions,
-    CardContent,
-    CardHeader,
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select
-} from "@mui/material";
-import Box from "@mui/material/Box";
-import {MobileDateTimePicker} from "@mui/x-date-pickers";
-import dayjs from "dayjs";
-import TextField from "@mui/material/TextField";
+import React, {useContext, useEffect} from 'react';
+import dayjs, {Dayjs} from "dayjs";
 import {useNavigate} from "react-router-dom";
 import {SettingsContext} from "../providers/SettingsProvider";
 import {AuthContext} from "../providers/AuthProvider";
 import {getCurrentDay, updateDay} from "../firebase/dayApi";
+import {Button, Card, DatePicker, Form, Input, InputNumber, Space, TimePicker} from "antd";
+import {tgBackButton, tgButton, tgEnabled} from "../helpers/telegram";
 
-const tg = window.Telegram.WebApp;
+interface IEndDayForm {
+    date: Dayjs;
+    time: Dayjs;
+    distance: number;
+    cash: number;
+    note: string | undefined;
+}
 
 const EndDayPage = () => {
 
     const nav = useNavigate();
     const settings = useContext(SettingsContext);
     const user = useContext(AuthContext);
-    const [endTime, setEndTime] = useState<dayjs.Dayjs>(dayjs());
-    const [distance, setDistance] = useState('0');
-    const [isDistanceError, setIsDistanceError] = useState(false);
-    const [cash, setCash] = useState('0');
-    const [isCashError, setIsCashError] = useState(false);
-    const [note, setNote] = useState('');
-
-    useEffect(() => {
-        tg.BackButton.onClick(goBack);
-        tg.BackButton.show();
-        return () => {
-            tg.BackButton.offClick(goBack);
-            tg.BackButton.hide();
-        }
-    }, []);
+    const [form] = Form.useForm();
 
     const goBack = () => nav(-1);
 
-    const onDistanceChanged = (e: ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        const num = Number.parseFloat(value);
-        setDistance(value);
-        setIsDistanceError(isNaN(num) || num < 0);
-    }
+    useEffect(() => {
 
-    const onCashChanged = (e: ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        const num = Number.parseFloat(value);
-        setCash(value);
-        setIsCashError(isNaN(num) || num < 0);
-    }
+        form.setFieldsValue({"date": dayjs(), "time": dayjs(), "distance": 0, "cash": 0});
 
-    const calcExpenses = () => {
-        const d = Number.parseFloat(distance);
-        return d * (settings?.fuelExpenses ?? 0) / 100 * (settings?.fuelCost ?? 0);
-    }
+        if (tgEnabled) {
+            tgButton.text = 'Закончить день';
+            tgButton.onClick(form.submit);
+            tgButton.show();
+            tgBackButton.onClick(goBack);
+            tgBackButton.show();
+            return () => {
+                tgButton.offClick(form.submit);
+                tgButton.hide();
+                tgBackButton.offClick(goBack);
+                tgBackButton.hide();
+            }
+        }
+    }, []);
 
-    const endDay = async () => {
+    const calcExpenses = (distance: number) =>
+        distance * (settings?.fuelExpenses ?? 0) / 100 * (settings?.fuelCost ?? 0);
+
+    const onFormSubmit = async (values: IEndDayForm) => {
+        let dateTime: Dayjs = dayjs(values.date);
+        dateTime = dateTime.set("hour", values.time.hour());
+        dateTime = dateTime.set("minutes", values.time.minute());
+
         if (user) {
             const day = await getCurrentDay(user.uid);
             if (day) {
-                day.endTime = endTime.toDate();
-                day.note = note;
-                day.dayMoney = Number.parseFloat(cash);
-                day.distance = Number.parseFloat(distance);
-                day.expenses = calcExpenses();
+                day.endTime = dateTime.toDate();
+                day.note = values.note ?? null;
+                day.dayMoney = values.cash;
+                day.distance = values.distance;
+                day.expenses = calcExpenses(values.distance);
 
                 await updateDay(user.uid, day);
                 goBack();
@@ -80,58 +67,41 @@ const EndDayPage = () => {
     }
 
     return (
-        <Card>
-            <CardHeader title="Конец дня"/>
-            <CardContent>
-                <Box>
-                    <FormControl fullWidth margin="normal">
-                        <MobileDateTimePicker ampmInClock={false}
-                                              ampm={false}
-                                              label="Дата и время"
-                                              defaultValue={dayjs()}
-                                              value={endTime}
-                                              onChange={d => setEndTime(d ?? dayjs())}/>
-                    </FormControl>
-                    <TextField
-                        type="number"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="distance"
-                        label="Пробег, км."
-                        name="distance"
-                        value={distance}
-                        onChange={onDistanceChanged}
-                        error={isDistanceError}
-                    />
-                    <TextField
-                        type="number"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="cash"
-                        label="Чаевые"
-                        name="cash"
-                        value={cash}
-                        onChange={onCashChanged}
-                        error={isCashError}
-                    />
-                    <TextField
-                        type="text"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="note"
-                        label="Примечание"
-                        name="note"
-                        value={note}
-                        onChange={e => setNote(e.target.value)}
-                    />
-                </Box>
-            </CardContent>
-            <CardActions>
-                <Button variant='outlined' onClick={endDay} disabled={isCashError || isDistanceError}>Закончить</Button>
-            </CardActions>
+        <Card title="Конец дня" bordered={false}>
+            <Space direction="vertical" style={{display: 'flex'}}>
+                <Form<IEndDayForm> form={form} layout="vertical" onFinish={onFormSubmit}>
+                    <Form.Item label="Дата" name="date">
+                        <DatePicker size="large" style={{minWidth: '100%'}} inputReadOnly/>
+                    </Form.Item>
+                    <Form.Item label="Время" name="time">
+                        <TimePicker size="large" style={{minWidth: '100%'}} inputReadOnly/>
+                    </Form.Item>
+                    <Form.Item label="Пробег, км." name="distance"
+                               rules={[{required: true, message: 'Укажите пройденное за день расстояние'}]}>
+                        <InputNumber
+                            size="large"
+                            min="0"
+                            step="0.01"
+                            style={{minWidth: '100%'}}
+                        />
+                    </Form.Item>
+                    <Form.Item label="Чаевые" name="cash"
+                               rules={[{required: true, message: 'Укажите сумму чаевых за день'}]}>
+                        <InputNumber
+                            size="large"
+                            min="0"
+                            step="0.01"
+                            style={{minWidth: '100%'}}
+                        />
+                    </Form.Item>
+                    <Form.Item label="Примечание" name="note">
+                        <Input size="large"/>
+                    </Form.Item>
+                    {!tgEnabled && <div style={{textAlign: 'center'}}>
+                        <Button htmlType="submit" type="primary" size="large">Закончить</Button>
+                    </div>}
+                </Form>
+            </Space>
         </Card>
     );
 };

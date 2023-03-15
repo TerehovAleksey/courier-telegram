@@ -1,67 +1,83 @@
 import React, {useEffect, useState} from "react";
-import {
-    createTheme,
-    CssBaseline,
-    PaletteMode,
-    ThemeProvider,
-} from "@mui/material";
-import StartError from "./components/StartError";
-import AppContent from "./AppContent";
-import {LocalizationProvider, ruRU} from '@mui/x-date-pickers';
-import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs'
 import 'dayjs/locale/ru.js';
-
-const tg = window.Telegram.WebApp;
+import ThemeProvider from "./providers/ThemeProvider";
+import {App as AntdApp} from 'antd';
+import PageLoader from "./components/PageLoader";
+import {AuthProvider} from "./providers/AuthProvider";
+import {SettingsProvider} from "./providers/SettingsProvider";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import PageLayout from "./layouts/PageLayout";
+import HomePage from "./pages/HomePage";
+import StartDayPage from "./pages/StartDayPage";
+import DeliveryPage from "./pages/DeliveryPage";
+import EndDayPage from "./pages/EndDayPage";
+import HistoryPage from "./pages/HistoryPage";
+import SettingsPage from "./pages/SettingsPage";
+import EmptyLayout from "./layouts/EmptyLayout";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import {User} from "firebase/auth";
+import {ISettings} from "./models/ISettings";
+import {auth} from "./firebase/firebase";
+import {settingsSubscriber} from "./firebase/settingsApi";
+import {tgEnabled, tgUser} from "./helpers/telegram";
+import {setTgUser} from "./firebase/userApi";
+import TemplatePage from "./pages/TemplatePage";
+import DayPage from "./pages/DayPage";
 
 function App() {
 
-    const [mode, setMode] = useState<PaletteMode>(tg.colorScheme);
-    const [error, setError] = useState(false);
+    const [user, setUser] = useState<User | null | undefined>(undefined);
+    const [settings, setSettings] = useState<ISettings | null>(null);
 
     useEffect(() => {
-        console.log('---> App MOUNTED');
-        tg.ready();
-        const e = tg.platform === 'unknown' || tg.initDataUnsafe.user?.is_bot;
-        if (e) {
-            setError(e);
-        }
-        tg.onEvent("themeChanged", () => setMode(tg.colorScheme));
-        return () => console.log('---> App UNMOUNTED');
+        const unsubscribe = auth.onAuthStateChanged(user => {
+            setUser(user);
+        });
+        return () => unsubscribe();
     }, []);
 
-    const theme = React.useMemo(
-        () => createTheme({
-            palette: {
-                mode,
-                primary: {
-                    main: tg?.themeParams.button_color ?? '#1976d2',
-                    dark: tg?.themeParams.button_color ?? '#1565c0'
-                },
-                background: {
-                    default: tg?.themeParams.bg_color ?? '#fff',
-                    paper: tg?.themeParams.secondary_bg_color ?? '#fff'
-                },
-            },
-        }),
-        [mode],
-    );
+    useEffect(() => {
+        if (user) {
+            if (tgEnabled && tgUser) {
+                setTgUser(user.uid, tgUser);
+            }
+            const unsubscribe = settingsSubscriber(user.uid, settings => setSettings(settings));
+            return () => unsubscribe();
+        }
+    }, [user]);
 
     return (
-        <>
-            {
-                error ? (<StartError/>) :
-                    <ThemeProvider theme={theme}>
-                        {/*необходимая локализация для DateTimeInputs*/}
-                        <LocalizationProvider
-                            dateAdapter={AdapterDayjs}
-                            adapterLocale="ru"
-                            localeText={ruRU.components.MuiLocalizationProvider.defaultProps.localeText}>
-                            <CssBaseline/>
-                            <AppContent/>
-                        </LocalizationProvider>
-                    </ThemeProvider>
-            }
-        </>
+        <ThemeProvider>
+            <AntdApp>
+                {
+                    user === undefined ?
+                        <PageLoader/> :
+                        <AuthProvider value={user}>
+                            <SettingsProvider value={settings}>
+                                <BrowserRouter>
+                                    <Routes>
+                                        <Route path="/courier-telegram" element={<PageLayout/>}>
+                                            <Route index element={<HomePage/>}/>
+                                            <Route path="start" element={<StartDayPage/>}/>
+                                            <Route path="delivery" element={<DeliveryPage/>}/>
+                                            <Route path="day" element={<DayPage/>}/>
+                                            <Route path="end" element={<EndDayPage/>}/>
+                                            <Route path="history" element={<HistoryPage/>}/>
+                                            <Route path="settings" element={<SettingsPage/>}/>
+                                            <Route path="settings/template" element={<TemplatePage/>}/>
+                                        </Route>
+                                        <Route path="/courier-telegram/" element={<EmptyLayout/>}>
+                                            <Route path="login" element={<LoginPage/>}/>
+                                            <Route path="register" element={<RegisterPage/>}/>
+                                        </Route>
+                                    </Routes>
+                                </BrowserRouter>
+                            </SettingsProvider>
+                        </AuthProvider>
+                }
+            </AntdApp>
+        </ThemeProvider>
     )
 }
 

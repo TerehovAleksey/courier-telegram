@@ -1,15 +1,5 @@
+import {Button, Card, List, Space, Typography} from 'antd';
 import React from 'react';
-import {
-    Button,
-    Card,
-    CardActions,
-    CardContent,
-    CardHeader,
-    List,
-    ListItem,
-    ListItemText,
-    Typography
-} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {IDay} from "../../../models/IDay";
 
@@ -23,26 +13,20 @@ const DeliveryCard = ({day}: DeliveryCardProps) => {
     const nav = useNavigate();
 
     return (
-        <Card sx={{my: 2}}>
-            <CardHeader title="Доставки"/>
-            <CardContent>
+        <Card title="Доставки" bordered={false}>
+            <Space direction="vertical" style={{display: 'flex'}}>
                 {(day === null || day.deliveries.length === 0) ?
                     <Typography>Доставок пока нет</Typography> :
-                    <List>
-                        {
-                            day.deliveries.map(d =>
-                                <ListItem key={d.id}>
-                                    <ListItemText primary={`#${d.number} ${d.dateTime.toLocaleTimeString()}`}
-                                                  secondary={d.address}/>
-                                </ListItem>
-                            )
-                        }
-                    </List>
+                    <List itemLayout="horizontal" dataSource={day.deliveries}
+                          renderItem={(item) => (
+                              <List.Item>
+                                  <List.Item.Meta title={`#${item.number} (${item.address}) - ${item.dateTime.toLocaleTimeString()}`}
+                                                  description={`${item.cost} - ${item.paymentType?.name}`}/>
+                              </List.Item>
+                          )}/>
                 }
-            </CardContent>
-            <CardActions>
-                <Button size="small" onClick={() => nav('delivery')}>Добавить</Button>
-            </CardActions>
+                <Button type="primary" onClick={() => nav("delivery")}>Добавить</Button>
+            </Space>
         </Card>
     );
 };
