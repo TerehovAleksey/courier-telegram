@@ -16,7 +16,7 @@ const FilterCard = ({days}: FilterCardProps) => {
     const [day, setDay] = useState<IDay | null>(null);
 
     const dates = useMemo(() => {
-        return days.map(d => dayjs(d.startTime).date())
+        return days.map(d => dayjs(d.startTime).format('YYYY-MM-DD'))
     }, [days]);
 
     const onDateSelected = (date: Dayjs | null) => {
@@ -40,7 +40,8 @@ const FilterCard = ({days}: FilterCardProps) => {
                             onChange={onDateSelected}
                             dateRender={(current) => {
                                 const style: React.CSSProperties = {};
-                                if (dates.includes(current.date())) {
+                                const date = current.format('YYYY-MM-DD');
+                                if (dates.includes(date)) {
                                     style.border = '1px solid green';
                                 }
                                 return (
@@ -57,11 +58,11 @@ const FilterCard = ({days}: FilterCardProps) => {
                     <Descriptions size="small" column={1}>
                         <Descriptions.Item label="Доставок">{day.count}</Descriptions.Item>
                         <Descriptions.Item label="Чаевые">{day.dayMoney}</Descriptions.Item>
-                        <Descriptions.Item label="К выплате">{day.dayCost}</Descriptions.Item>
+                        <Descriptions.Item label="К выплате">{day.dayCost.toFixed(2)}</Descriptions.Item>
                         <Descriptions.Item label="Расстояние">{day.distance}</Descriptions.Item>
-                        <Descriptions.Item label="Затраты">{day.expenses}</Descriptions.Item>
+                        <Descriptions.Item label="Затраты">{day.expenses?.toFixed(2)}</Descriptions.Item>
                         <Divider/>
-                        <Descriptions.Item label="Итого">{day.dayCost + day.dayMoney - (day.expenses ?? 0)}</Descriptions.Item>
+                        <Descriptions.Item label="Итого">{(day.dayCost + day.dayMoney - (day.expenses ?? 0)).toFixed(2)}</Descriptions.Item>
                     </Descriptions>}
             </div>
         </Card>

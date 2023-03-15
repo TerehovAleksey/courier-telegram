@@ -8,6 +8,7 @@ import {createDay} from "../firebase/dayApi";
 import {useNavigate} from "react-router-dom";
 import uuid from 'react-uuid';
 import {IDay} from "../models/IDay";
+import locale from 'antd/es/date-picker/locale/ru_RU';
 
 interface IStartDayForm {
     date: Dayjs;
@@ -47,6 +48,10 @@ const StartDayPage = () => {
         }
     }, []);
 
+    const onTemplateChange = (templateId: string) => {
+        form.setFieldValue("money", settings?.templates.find(t => t.id === templateId)?.dayMoney ?? 0);
+    }
+
     const onFormSubmit = (values: IStartDayForm) => {
         let dateTime: Dayjs = dayjs(values.date);
         dateTime = dateTime.set("hour", values.time.hour());
@@ -79,14 +84,15 @@ const StartDayPage = () => {
             <Space direction="vertical" style={{display: 'flex'}}>
                 <Form<IStartDayForm> form={form} layout="vertical" onFinish={onFormSubmit}>
                     <Form.Item label="Дата" name="date">
-                        <DatePicker size="large" style={{minWidth: '100%'}} inputReadOnly/>
+                        <DatePicker locale={locale} size="large" style={{minWidth: '100%'}} inputReadOnly/>
                     </Form.Item>
                     <Form.Item label="Время" name="time">
-                        <TimePicker size="large" style={{minWidth: '100%'}} inputReadOnly/>
+                        <TimePicker locale={locale} size="large" style={{minWidth: '100%'}} inputReadOnly/>
                     </Form.Item>
-                    <Form.Item label="Шаблон" name="template"
+                    <Form.Item label="Шаблон" name="template" hidden={(settings?.templates.length ?? 0) < 2}
                                rules={[{required: true, message: 'Выберете шаблон для продолжения'}]}>
                         <Select
+                            onSelect={onTemplateChange}
                             size="large"
                             options={settings?.templates.map(t => ({value: t.id, label: t.name}))}
                         />

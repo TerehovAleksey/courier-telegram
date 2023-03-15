@@ -14,6 +14,7 @@ const HistoryPage = () => {
 
     const settings = useContext(SettingsContext);
     const user = useContext(AuthContext);
+    const [form] = Form.useForm();
 
     const [selector, setSelector] = useState(emptySelector);
     const [days, setDays] = useState<IDay[] | null>(null);
@@ -30,17 +31,20 @@ const HistoryPage = () => {
         }
     }, [settings]);
 
+    useEffect(() => {
+        form.setFieldValue("templateId", selector[0].value);
+    }, [selector]);
+
     return (
         <Space direction="vertical" style={{display: 'flex'}}>
             <Card>
-                <Form layout="vertical">
+                <Form form={form} layout="vertical">
                     <Form.Item label="Шаблон" name="templateId"
                                rules={[{required: true, message: 'Выберете шаблон'}]}>
                         <Select
                             size="large"
                             onChange={e => console.log(e)}
                             options={selector}
-                            defaultValue={selector[0].value}
                         />
                     </Form.Item>
                 </Form>

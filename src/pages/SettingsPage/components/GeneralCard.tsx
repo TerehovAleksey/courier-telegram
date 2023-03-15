@@ -1,6 +1,9 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {ISettings} from "../../../models/ISettings";
 import {Button, Card, Form, InputNumber, Space} from "antd";
+import {updateSettings} from "../../../firebase/settingsApi";
+import {AuthContext} from "../../../providers/AuthProvider";
+import {useAdapter} from "../../../hooks/useAdapter";
 
 interface ISettingsForm {
     fuelCost: number;
@@ -13,14 +16,20 @@ type GeneralCardProps = {
 
 const GeneralCard = ({settings}: GeneralCardProps) => {
 
+    const user = useContext(AuthContext);
+    const {showNotification} = useAdapter();
     const [form] = Form.useForm();
 
-    useEffect(()=>{
+    useEffect(() => {
         form.setFieldsValue({"fuelCost": settings?.fuelCost ?? 0, "fuelExpenses": settings?.fuelExpenses ?? 0});
-    },[settings]);
+    }, [settings]);
 
     const onFormSubmit = (values: ISettingsForm) => {
-        console.log(values);
+        if (user) {
+            const result = {...settings, fuelCost: values.fuelCost, fuelExpenses: values.fuelExpenses} as ISettings;
+            updateSettings(user.uid, result)
+                .then(() => showNotification("Параметры успешно обновлены!"));
+        }
     }
 
     return (
@@ -45,8 +54,8 @@ const GeneralCard = ({settings}: GeneralCardProps) => {
                             style={{minWidth: '100%'}}
                         />
                     </Form.Item>
+                    <Button htmlType="submit" type="primary">Обновить</Button>
                 </Form>
-                <Button htmlType="submit" type="primary">Обновить</Button>
             </Space>
         </Card>
     );

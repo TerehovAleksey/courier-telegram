@@ -54,7 +54,7 @@ const TemplatesCard = ({settings}: TemplatesCardProps) => {
                               </List.Item>
                           )}/>
                 }
-                <Button type="primary" onClick={() => nav('template')}>Новй шаблон</Button>
+                <Button type="primary" onClick={() => nav('template')}>Новый шаблон</Button>
             </Space>
         </Card>
     );

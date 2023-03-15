@@ -7,6 +7,11 @@ import {SettingsContext} from "../providers/SettingsProvider";
 import {AuthContext} from "../providers/AuthProvider";
 import {IDeliveryType} from "../models/IDeliveryType";
 import {useAdapter} from "../hooks/useAdapter";
+import {calculateAddDay} from "../helpers/dayCalculation";
+import {IDay} from "../models/IDay";
+import uuid from "react-uuid";
+import {createDay} from "../firebase/dayApi";
+import locale from 'antd/es/date-picker/locale/ru_RU';
 
 interface IDayForm {
     dateStart: Dayjs;
@@ -76,8 +81,49 @@ const DayPage = () => {
         }
     }, []);
 
+    const onTemplateChange = (templateId: string) => {
+        setDeliveryTypes(settings?.templates.find(t => t.id === templateId)?.deliveryTypes ?? null);
+    }
+
     const onFormSubmit = (values: IDayForm) => {
-        showAlert('Не реализовано!');
+        if (!settings || !user) {
+            return;
+        }
+
+        let dateTimeStart: Dayjs = dayjs(values.dateStart);
+        dateTimeStart = dateTimeStart.set("hour", values.timeStart.hour());
+        dateTimeStart = dateTimeStart.set("minutes", values.timeStart.minute());
+        dateTimeStart = dateTimeStart.set("seconds", 0);
+
+        let dateTimeEnd: Dayjs = dayjs(values.dateEnd);
+        dateTimeEnd = dateTimeEnd.set("hour", values.timeEnd.hour());
+        dateTimeEnd = dateTimeEnd.set("minutes", values.timeEnd.minute());
+        dateTimeEnd = dateTimeEnd.set("seconds", 0);
+
+        if (dateTimeStart.isSame(dateTimeEnd, 'minutes') || dateTimeStart.isAfter(dateTimeEnd, 'minutes')) {
+            showAlert('Время окончания дня должно быть больше времени начала');
+            return;
+        }
+
+        const day: IDay = {
+            id: uuid(),
+            startTime: dateTimeStart.toDate(),
+            endTime: dateTimeEnd.toDate(),
+            dayCost: 0,
+            count: values.count,
+            templateId: values.templateId,
+            dayMoney: 0,
+            distance: values.distance,
+            note: values.note ?? null,
+            expenses: 0,
+            cashMoney: values.cash,
+            deliveries: []
+        }
+
+        calculateAddDay(day, settings, values.deliveryTypeId);
+
+        createDay(user.uid, day)
+            .then(() => nav(-1));
     }
 
     return (
@@ -87,21 +133,21 @@ const DayPage = () => {
                     <Form<IDayForm> form={form} layout="vertical" onFinish={onFormSubmit}>
                         <Form.Item label="Дата начала" name="dateStart"
                                    rules={[{required: true, message: 'Укажите дату начала'}]}>
-                            <DatePicker size="large" style={{minWidth: '100%'}} inputReadOnly/>
+                            <DatePicker locale={locale} size="large" style={{minWidth: '100%'}} inputReadOnly/>
                         </Form.Item>
                         <Form.Item label="Время начала" name="timeStart"
                                    rules={[{required: true, message: 'Укажите время начала'}]}>
-                            <TimePicker size="large" style={{minWidth: '100%'}} inputReadOnly/>
+                            <TimePicker locale={locale} size="large" style={{minWidth: '100%'}} inputReadOnly/>
                         </Form.Item>
-                        <Form.Item label="Шаблон" name="templateId"
+                        <Form.Item label="Шаблон" name="templateId" hidden={(settings?.templates.length ?? 0) < 2}
                                    rules={[{required: true, message: 'Выберете шаблон'}]}>
                             <Select
                                 size="large"
-                                onChange={e => console.log(e)}
+                                onChange={onTemplateChange}
                                 options={settings?.templates.map(t => ({value: t.id, label: t.name}))}
                             />
                         </Form.Item>
-                        <Form.Item label="Тип доставок" name="deliveryTypeId"
+                        <Form.Item label="Тип доставок" name="deliveryTypeId" hidden={(deliveryTypes?.length ?? 0) < 2}
                                    rules={[{required: true, message: 'Выберете тип доставок'}]}>
                             <Select
                                 size="large"
@@ -110,7 +156,7 @@ const DayPage = () => {
                         </Form.Item>
                         <Form.Item label="Количество" name="count"
                                    rules={[{required: true, message: 'Укажите количество доставок'},
-                                       ({getFieldValue}) => ({
+                                       () => ({
                                            validator(_, value) {
                                                if (Number.parseInt(value) < 1) {
                                                    return Promise.reject(new Error('Доставки должны быть!'));
@@ -148,11 +194,11 @@ const DayPage = () => {
                         </Form.Item>
                         <Form.Item label="Дата окончания" name="dateEnd"
                                    rules={[{required: true, message: 'Укажите дату окончания'}]}>
-                            <DatePicker size="large" style={{minWidth: '100%'}} inputReadOnly/>
+                            <DatePicker locale={locale} size="large" style={{minWidth: '100%'}} inputReadOnly/>
                         </Form.Item>
                         <Form.Item label="Время окончания" name="timeEnd"
                                    rules={[{required: true, message: 'Укажите время окончания'}]}>
-                            <TimePicker size="large" style={{minWidth: '100%'}} inputReadOnly/>
+                            <TimePicker locale={locale} size="large" style={{minWidth: '100%'}} inputReadOnly/>
                         </Form.Item>
                         {!tgEnabled && <div style={{textAlign: 'center'}}>
                             <Button htmlType="submit" type="primary" size="large">Добавить</Button>
