@@ -23,6 +23,7 @@ import {settingsSubscriber} from "./firebase/settingsApi";
 import {tgEnabled, tgUser} from "./helpers/telegram";
 import {setTgUser} from "./firebase/userApi";
 import TemplatePage from "./pages/TemplatePage";
+import DayPage from "./pages/DayPage";
 
 function App() {
 
@@ -60,6 +61,7 @@ function App() {
                                             <Route index element={<HomePage/>}/>
                                             <Route path="start" element={<StartDayPage/>}/>
                                             <Route path="delivery" element={<DeliveryPage/>}/>
+                                            <Route path="day" element={<DayPage/>}/>
                                             <Route path="end" element={<EndDayPage/>}/>
                                             <Route path="history" element={<HistoryPage/>}/>
                                             <Route path="settings" element={<SettingsPage/>}/>
