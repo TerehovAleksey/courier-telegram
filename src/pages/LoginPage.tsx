@@ -1,10 +1,16 @@
 import React, {useEffect} from 'react';
-import {getAuth, signInWithEmailAndPassword} from "firebase/auth";
+import {
+    getAuth,
+    signInWithEmailAndPassword,
+    GoogleAuthProvider,
+    signInWithPopup
+} from "firebase/auth";
 import {LockOutlined} from '@ant-design/icons';
-import {Avatar, Button, Form, Input, Space, Typography} from "antd";
+import {Avatar, Button, Form, Image, Input, Space, Typography} from "antd";
 import {useAdapter} from "../hooks/useAdapter";
 import {tgButton, tgEnabled} from "../helpers/telegram";
 import {PWD_REGEX} from "../../constants";
+import googleLogo from '../assets/google.svg';
 
 interface ILoginForm {
     email: string;
@@ -40,6 +46,15 @@ const LoginPage = () => {
             });
     }
 
+    const googleAuth = () => {
+        const provider = new GoogleAuthProvider();
+        signInWithPopup(getAuth(), provider)
+            .catch((error) => {
+                console.log(error);
+                showAlert('Произошла ошибка входа через сервисы Google');
+            });
+    }
+
     return (
         <Space direction="vertical" style={{display: 'flex'}}>
             <div style={{marginTop: 50, textAlign: 'center'}}>
@@ -62,6 +77,19 @@ const LoginPage = () => {
                     <Button htmlType="submit" type="primary" size="large" style={{minWidth: 160}}>Войти</Button>
                 </div>}
             </Form>
+            <div style={{display: 'flex', justifyContent: 'center'}}>
+                <Button type="primary" style={{
+                    width: '80%',
+                    alignSelf: 'center',
+                    marginTop: 30,
+                    display: 'flex',
+                    alignItems: 'center'
+                }} size="large" onClick={googleAuth}
+                        icon={<Avatar shape="square" size={36} style={{backgroundColor: '#fff'}}
+                                      icon={<Image src={googleLogo}/>}/>}>
+                    <Typography style={{flexGrow: 1, marginLeft: -36}}>Вход с помощью Google</Typography>
+                </Button>
+            </div>
         </Space>
     );
 };
