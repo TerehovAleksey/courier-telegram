@@ -65,7 +65,7 @@ const LoginPage = () => {
             </Form>
             {
                 !tgEnabled &&
-                <div>
+                <div style={{marginTop: 60}}>
                     <Alert type="info" message={
                         <>
                             <Typography>Данное приложение оптимизировано для работы в качестве Telegram Web App и
