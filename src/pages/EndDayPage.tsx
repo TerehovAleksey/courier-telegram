@@ -6,6 +6,7 @@ import {AuthContext} from "../providers/AuthProvider";
 import {getCurrentDay, updateDay} from "../firebase/dayApi";
 import {Button, Card, DatePicker, Form, Input, InputNumber, Space, TimePicker} from "antd";
 import {tgBackButton, tgButton, tgEnabled} from "../helpers/telegram";
+import {useAdapter} from "../hooks/useAdapter";
 
 interface IEndDayForm {
     date: Dayjs;
@@ -21,6 +22,7 @@ const EndDayPage = () => {
     const settings = useContext(SettingsContext);
     const user = useContext(AuthContext);
     const [form] = Form.useForm();
+    const {showAlert} = useAdapter();
 
     const goBack = () => nav(-1);
 
@@ -53,7 +55,20 @@ const EndDayPage = () => {
 
         if (user) {
             const day = await getCurrentDay(user.uid);
+
             if (day) {
+
+                if (dateTime.isBefore(day.startTime)){
+                    showAlert('Время окончания не может быть раньше времени начала дня!');
+                    return;
+                }
+
+                const diff = dateTime.diff(day.startTime, 'minutes');
+                if (diff > 1440){
+                    showAlert('Мы увенены, что рабочий день не может быть более 24 часов!');
+                    return;
+                }
+
                 day.endTime = dateTime.toDate();
                 day.note = values.note ?? null;
                 day.dayMoney = values.cash;

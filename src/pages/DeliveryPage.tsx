@@ -10,6 +10,7 @@ import {ITemplate} from "../models/ITemplate";
 import {useNavigate} from "react-router-dom";
 import {Button, Card, DatePicker, Form, Input, InputNumber, Select, Space, TimePicker} from "antd";
 import {tgBackButton, tgButton, tgEnabled} from "../helpers/telegram";
+import {useAdapter} from "../hooks/useAdapter";
 
 interface IDeliveryForm {
     date: Dayjs;
@@ -28,6 +29,7 @@ const DeliveryPage = () => {
     const settings = useContext(SettingsContext);
     const user = useContext(AuthContext);
     const [form] = Form.useForm();
+    const {showAlert} = useAdapter();
 
     const [day, setDay] = useState<IDay | null>(null);
     const [template, setTemplate] = useState<ITemplate | null>(null);
@@ -54,27 +56,45 @@ const DeliveryPage = () => {
         if (user) {
             getCurrentDay(user.uid).then(d => {
                 setDay(d);
-                const template = settings?.templates.find(t => t.id === d?.templateId);
-                if (template) {
-                    setTemplate(template);
-                    let pId = template.paymentTypes.find(t => t.isDefault)?.id;
-                    if (!pId) {
-                        pId = template.paymentTypes[0]?.id;
-                    }
-                    let dId = template.deliveryTypes.find(t => t.isDefault)?.id;
-                    if (!dId) {
-                        dId = template.deliveryTypes[0]?.id;
-                    }
-                    form.setFieldsValue({"date": dayjs(), "time": dayjs(), "cost": 0, "paymentId": pId, "typeId": dId});
-                }
             });
         }
     }, [user]);
+
+    useEffect(()=>{
+        if (day && settings){
+            const template = settings.templates.find(t => t.id === day.templateId);
+            if (template) {
+                setTemplate(template);
+                let pId = template.paymentTypes.find(t => t.isDefault)?.id;
+                if (!pId) {
+                    pId = template.paymentTypes[0]?.id;
+                }
+                let dId = template.deliveryTypes.find(t => t.isDefault)?.id;
+                if (!dId) {
+                    dId = template.deliveryTypes[0]?.id;
+                }
+                form.setFieldsValue({"date": dayjs(day.startTime), "time": dayjs(day.startTime), "cost": 0, "paymentId": pId, "typeId": dId});
+            }
+        }
+    },[day, settings]);
 
     const onFormSubmit = (values: IDeliveryForm) => {
         let dateTime: Dayjs = dayjs(values.date);
         dateTime = dateTime.set("hour", values.time.hour());
         dateTime = dateTime.set("minutes", values.time.minute());
+
+        if (dateTime.isBefore(day?.startTime)){
+            showAlert('Время доставки не может быть раньше времени начала дня!');
+            return;
+        }
+
+        if (day){
+            const diff = dateTime.diff(day.startTime, 'minutes');
+            if (diff > 1440){
+                showAlert('Мы увенены, что рабочий день не может быть более 24 часов!');
+                return;
+            }
+        }
 
         const delivery: IDelivery = {
             id: uuid(),
@@ -128,6 +148,7 @@ const DeliveryPage = () => {
                         />
                     </Form.Item>
                     <Form.Item label="Тип оплаты" name="paymentId"
+                               hidden={(template?.paymentTypes.length ?? 0) < 2}
                                rules={[{required: true, message: 'Выберете тип оплаты для продолжения'}]}>
                         <Select
                             size="large"
@@ -135,6 +156,7 @@ const DeliveryPage = () => {
                         />
                     </Form.Item>
                     <Form.Item label="Вид доставки" name="typeId"
+                               hidden={(template?.deliveryTypes?.length ?? 0) < 2}
                                rules={[{required: true, message: 'Выберете вид доставки для продолжения'}]}>
                         <Select
                             size="large"

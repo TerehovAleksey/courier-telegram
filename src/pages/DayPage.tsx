@@ -105,6 +105,12 @@ const DayPage = () => {
             return;
         }
 
+        const diff = dateTimeEnd.diff(dateTimeStart, 'minutes');
+        if (diff > 1440){
+            showAlert('Мы увенены, что рабочий день не может быть более 24 часов!');
+            return;
+        }
+
         const day: IDay = {
             id: uuid(),
             startTime: dateTimeStart.toDate(),
