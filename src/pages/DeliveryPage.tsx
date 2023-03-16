@@ -60,8 +60,8 @@ const DeliveryPage = () => {
         }
     }, [user]);
 
-    useEffect(()=>{
-        if (day && settings){
+    useEffect(() => {
+        if (day && settings) {
             const template = settings.templates.find(t => t.id === day.templateId);
             if (template) {
                 setTemplate(template);
@@ -73,24 +73,30 @@ const DeliveryPage = () => {
                 if (!dId) {
                     dId = template.deliveryTypes[0]?.id;
                 }
-                form.setFieldsValue({"date": dayjs(day.startTime), "time": dayjs(day.startTime), "cost": 0, "paymentId": pId, "typeId": dId});
+                form.setFieldsValue({
+                    "date": dayjs(day.startTime),
+                    "time": dayjs(day.startTime),
+                    "cost": 0,
+                    "paymentId": pId,
+                    "typeId": dId
+                });
             }
         }
-    },[day, settings]);
+    }, [day, settings]);
 
     const onFormSubmit = (values: IDeliveryForm) => {
         let dateTime: Dayjs = dayjs(values.date);
         dateTime = dateTime.set("hour", values.time.hour());
         dateTime = dateTime.set("minutes", values.time.minute());
 
-        if (dateTime.isBefore(day?.startTime)){
+        if (dateTime.isBefore(day?.startTime)) {
             showAlert('Время доставки не может быть раньше времени начала дня!');
             return;
         }
 
-        if (day){
+        if (day) {
             const diff = dateTime.diff(day.startTime, 'minutes');
-            if (diff > 1440){
+            if (diff > 1440) {
                 showAlert('Мы увенены, что рабочий день не может быть более 24 часов!');
                 return;
             }
@@ -127,10 +133,10 @@ const DeliveryPage = () => {
             <Space direction="vertical" style={{display: 'flex'}}>
                 <Form<IDeliveryForm> form={form} layout="vertical" onFinish={onFormSubmit}>
                     <Form.Item label="Дата" name="date">
-                        <DatePicker size="large" style={{minWidth: '100%'}} inputReadOnly/>
+                        <DatePicker allowClear={false} size="large" style={{minWidth: '100%'}} inputReadOnly/>
                     </Form.Item>
                     <Form.Item label="Время" name="time">
-                        <TimePicker size="large" style={{minWidth: '100%'}} inputReadOnly/>
+                        <TimePicker allowClear={false} size="large" style={{minWidth: '100%'}} inputReadOnly/>
                     </Form.Item>
                     <Form.Item label="Номер" name="number">
                         <Input size="large"/>

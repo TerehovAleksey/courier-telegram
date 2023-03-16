@@ -1,10 +1,11 @@
 import React, {useEffect} from 'react';
 import {getAuth, signInWithEmailAndPassword} from "firebase/auth";
 import {LockOutlined} from '@ant-design/icons';
-import {Avatar, Button, Form, Input, Space, Typography} from "antd";
+import {Alert, Avatar, Button, Form, Input, Space, Typography} from "antd";
 import {useAdapter} from "../hooks/useAdapter";
 import {tgButton, tgEnabled} from "../helpers/telegram";
 import {PWD_REGEX} from "../../constants";
+import {Link} from "react-router-dom";
 
 interface ILoginForm {
     email: string;
@@ -62,6 +63,19 @@ const LoginPage = () => {
                     <Button htmlType="submit" type="primary" size="large" style={{minWidth: 160}}>Войти</Button>
                 </div>}
             </Form>
+            {
+                !tgEnabled &&
+                <div>
+                    <Alert type="info" message={
+                        <>
+                            <Typography>Данное приложение оптимизировано для работы в качестве Telegram Web App и
+                                доступно по ссылке</Typography>
+                            <Typography.Link><Link
+                                to="https://t.me/courier_app_bot">@courier_app_bot</Link></Typography.Link>
+                        </>
+                    }/>
+                </div>
+            }
         </Space>
     );
 };

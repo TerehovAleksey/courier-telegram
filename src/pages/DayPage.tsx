@@ -106,7 +106,7 @@ const DayPage = () => {
         }
 
         const diff = dateTimeEnd.diff(dateTimeStart, 'minutes');
-        if (diff > 1440){
+        if (diff > 1440) {
             showAlert('Мы увенены, что рабочий день не может быть более 24 часов!');
             return;
         }
@@ -118,11 +118,11 @@ const DayPage = () => {
             dayCost: 0,
             count: values.count,
             templateId: values.templateId,
-            dayMoney: 0,
+            cashMoney: 0,
             distance: values.distance,
             note: values.note ?? null,
             expenses: 0,
-            cashMoney: values.cash,
+            dayMoney: values.cash,
             deliveries: []
         }
 
@@ -139,11 +139,13 @@ const DayPage = () => {
                     <Form<IDayForm> form={form} layout="vertical" onFinish={onFormSubmit}>
                         <Form.Item label="Дата начала" name="dateStart"
                                    rules={[{required: true, message: 'Укажите дату начала'}]}>
-                            <DatePicker locale={locale} size="large" style={{minWidth: '100%'}} inputReadOnly/>
+                            <DatePicker allowClear={false} locale={locale} size="large" style={{minWidth: '100%'}}
+                                        inputReadOnly/>
                         </Form.Item>
                         <Form.Item label="Время начала" name="timeStart"
                                    rules={[{required: true, message: 'Укажите время начала'}]}>
-                            <TimePicker locale={locale} size="large" style={{minWidth: '100%'}} inputReadOnly/>
+                            <TimePicker allowClear={false} locale={locale} size="large" style={{minWidth: '100%'}}
+                                        inputReadOnly/>
                         </Form.Item>
                         <Form.Item label="Шаблон" name="templateId" hidden={(settings?.templates.length ?? 0) < 2}
                                    rules={[{required: true, message: 'Выберете шаблон'}]}>
@@ -200,11 +202,13 @@ const DayPage = () => {
                         </Form.Item>
                         <Form.Item label="Дата окончания" name="dateEnd"
                                    rules={[{required: true, message: 'Укажите дату окончания'}]}>
-                            <DatePicker locale={locale} size="large" style={{minWidth: '100%'}} inputReadOnly/>
+                            <DatePicker allowClear={false} locale={locale} size="large" style={{minWidth: '100%'}}
+                                        inputReadOnly/>
                         </Form.Item>
                         <Form.Item label="Время окончания" name="timeEnd"
                                    rules={[{required: true, message: 'Укажите время окончания'}]}>
-                            <TimePicker locale={locale} size="large" style={{minWidth: '100%'}} inputReadOnly/>
+                            <TimePicker allowClear={false} locale={locale} size="large" style={{minWidth: '100%'}}
+                                        inputReadOnly/>
                         </Form.Item>
                         {!tgEnabled && <div style={{textAlign: 'center'}}>
                             <Button htmlType="submit" type="primary" size="large">Добавить</Button>
