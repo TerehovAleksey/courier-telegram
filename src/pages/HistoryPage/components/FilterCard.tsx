@@ -56,8 +56,9 @@ const FilterCard = ({days}: FilterCardProps) => {
                 {!day && <Empty/>}
                 {day &&
                     <Descriptions size="small" column={1}>
+                        <Descriptions.Item label="Время">{day.startTime.toLocaleTimeString()} - {day.endTime?.toLocaleTimeString()}</Descriptions.Item>
                         <Descriptions.Item label="Доставок">{day.count}</Descriptions.Item>
-                        <Descriptions.Item label="Чаевые">{day.dayMoney}</Descriptions.Item>
+                        <Descriptions.Item label="Чаевые">{day.cashMoney}</Descriptions.Item>
                         <Descriptions.Item label="К выплате">{day.dayCost.toFixed(2)}</Descriptions.Item>
                         <Descriptions.Item label="Расстояние">{day.distance}</Descriptions.Item>
                         <Descriptions.Item label="Затраты">{day.expenses?.toFixed(2)}</Descriptions.Item>
