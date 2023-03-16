@@ -27,6 +27,20 @@ const FilterCard = ({days}: FilterCardProps) => {
     const [date, setDate] = useState<Dayjs | null>(dayjs());
     const [statistics, setStatistics] = useState<IFilterStatistics | null>(null);
 
+    useEffect(() => {
+        if (date) {
+            if (type === 'date') {
+                const selected = days.find(d => dayjs(d.startTime).isSame(date, 'day'));
+                setDayStatistics(selected);
+            } else {
+                const selected = days.filter(d => dayjs(d.startTime).isSame(date, type));
+                setDaysStatistics(selected);
+            }
+        } else {
+            setStatistics(null);
+        }
+    }, [days, type, date]);
+
     const dates = useMemo(() => {
         return days.map(d => dayjs(d.startTime).format('YYYY-MM-DD'))
     }, [days]);
@@ -69,20 +83,6 @@ const FilterCard = ({days}: FilterCardProps) => {
             setStatistics(null);
         }
     }
-
-    useEffect(() => {
-        if (date) {
-            if (type === 'date') {
-                const selected = days.find(d => dayjs(d.startTime).isSame(date, 'day'));
-                setDayStatistics(selected);
-            } else {
-                const selected = days.filter(d => dayjs(d.startTime).isSame(date, type));
-                setDaysStatistics(selected);
-            }
-        } else {
-            setStatistics(null);
-        }
-    }, [type, date]);
 
     return (
         <Card title="Фильтр" bordered={false}>
