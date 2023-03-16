@@ -84,10 +84,12 @@ const StartDayPage = () => {
             <Space direction="vertical" style={{display: 'flex'}}>
                 <Form<IStartDayForm> form={form} layout="vertical" onFinish={onFormSubmit}>
                     <Form.Item label="Дата" name="date">
-                        <DatePicker locale={locale} size="large" style={{minWidth: '100%'}} inputReadOnly/>
+                        <DatePicker allowClear={false} locale={locale} size="large" style={{minWidth: '100%'}}
+                                    inputReadOnly/>
                     </Form.Item>
                     <Form.Item label="Время" name="time">
-                        <TimePicker locale={locale} size="large" style={{minWidth: '100%'}} inputReadOnly/>
+                        <TimePicker allowClear={false} locale={locale} size="large" style={{minWidth: '100%'}}
+                                    inputReadOnly/>
                     </Form.Item>
                     <Form.Item label="Шаблон" name="template" hidden={(settings?.templates.length ?? 0) < 2}
                                rules={[{required: true, message: 'Выберете шаблон для продолжения'}]}>

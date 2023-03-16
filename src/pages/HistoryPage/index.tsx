@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import GeneralCard from "./components/GeneralCard";
-import {Card, Form, Select, Space} from "antd";
+import {Form, Space} from "antd";
 import FilterCard from "./components/FilterCard";
 import {SettingsContext} from "../../providers/SettingsProvider";
 import {DefaultOptionType} from 'antd/es/select';
@@ -37,18 +37,18 @@ const HistoryPage = () => {
 
     return (
         <Space direction="vertical" style={{display: 'flex'}}>
-            <Card>
-                <Form form={form} layout="vertical">
-                    <Form.Item label="Шаблон" name="templateId"
-                               rules={[{required: true, message: 'Выберете шаблон'}]}>
-                        <Select
-                            size="large"
-                            onChange={e => console.log(e)}
-                            options={selector}
-                        />
-                    </Form.Item>
-                </Form>
-            </Card>
+            {/*<Card>*/}
+            {/*    <Form form={form} layout="vertical">*/}
+            {/*        <Form.Item label="Шаблон" name="templateId"*/}
+            {/*                   rules={[{required: true, message: 'Выберете шаблон'}]}>*/}
+            {/*            <Select*/}
+            {/*                size="large"*/}
+            {/*                onChange={e => console.log(e)}*/}
+            {/*                options={selector}*/}
+            {/*            />*/}
+            {/*        </Form.Item>*/}
+            {/*    </Form>*/}
+            {/*</Card>*/}
             <GeneralCard days={days ?? []}/>
             <FilterCard days={days ?? []}/>
         </Space>

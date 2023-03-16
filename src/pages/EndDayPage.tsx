@@ -7,6 +7,7 @@ import {getCurrentDay, updateDay} from "../firebase/dayApi";
 import {Button, Card, DatePicker, Form, Input, InputNumber, Space, TimePicker} from "antd";
 import {tgBackButton, tgButton, tgEnabled} from "../helpers/telegram";
 import {useAdapter} from "../hooks/useAdapter";
+import locale from 'antd/es/date-picker/locale/ru_RU';
 
 interface IEndDayForm {
     date: Dayjs;
@@ -58,13 +59,13 @@ const EndDayPage = () => {
 
             if (day) {
 
-                if (dateTime.isBefore(day.startTime)){
+                if (dateTime.isBefore(day.startTime)) {
                     showAlert('Время окончания не может быть раньше времени начала дня!');
                     return;
                 }
 
                 const diff = dateTime.diff(day.startTime, 'minutes');
-                if (diff > 1440){
+                if (diff > 1440) {
                     showAlert('Мы увенены, что рабочий день не может быть более 24 часов!');
                     return;
                 }
@@ -86,10 +87,12 @@ const EndDayPage = () => {
             <Space direction="vertical" style={{display: 'flex'}}>
                 <Form<IEndDayForm> form={form} layout="vertical" onFinish={onFormSubmit}>
                     <Form.Item label="Дата" name="date">
-                        <DatePicker size="large" style={{minWidth: '100%'}} inputReadOnly/>
+                        <DatePicker allowClear={false} locale={locale} size="large" style={{minWidth: '100%'}}
+                                    inputReadOnly/>
                     </Form.Item>
                     <Form.Item label="Время" name="time">
-                        <TimePicker size="large" style={{minWidth: '100%'}} inputReadOnly/>
+                        <TimePicker allowClear={false} locale={locale} size="large" style={{minWidth: '100%'}}
+                                    inputReadOnly/>
                     </Form.Item>
                     <Form.Item label="Пробег, км." name="distance"
                                rules={[{required: true, message: 'Укажите пройденное за день расстояние'}]}>
