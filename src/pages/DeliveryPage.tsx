@@ -11,6 +11,7 @@ import {useNavigate} from "react-router-dom";
 import {Button, Card, DatePicker, Form, Input, InputNumber, Select, Space, TimePicker} from "antd";
 import {tgBackButton, tgButton, tgEnabled} from "../helpers/telegram";
 import {useAdapter} from "../hooks/useAdapter";
+import {fixedRound} from "../helpers/dayCalculation";
 
 interface IDeliveryForm {
     date: Dayjs;
@@ -32,6 +33,7 @@ const DeliveryPage = () => {
     const {showAlert} = useAdapter();
 
     const [day, setDay] = useState<IDay | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
     const [template, setTemplate] = useState<ITemplate | null>(null);
 
     const goBack = () => nav(-1);
@@ -53,9 +55,23 @@ const DeliveryPage = () => {
     }, []);
 
     useEffect(() => {
+        if (tgEnabled) {
+            if (isLoading) {
+                tgButton.showProgress();
+                tgButton.disable();
+            } else {
+                tgButton.hideProgress();
+                tgButton.enable();
+            }
+        }
+    }, [isLoading]);
+
+    useEffect(() => {
         if (user) {
+            setIsLoading(true);
             getCurrentDay(user.uid).then(d => {
                 setDay(d);
+                setIsLoading(false);
             });
         }
     }, [user]);
@@ -75,7 +91,7 @@ const DeliveryPage = () => {
                 }
                 form.setFieldsValue({
                     "date": dayjs(day.startTime),
-                    "time": dayjs(day.startTime),
+                    "time": dayjs(dayjs()),
                     "cost": 0,
                     "paymentId": pId,
                     "typeId": dId
@@ -114,24 +130,31 @@ const DeliveryPage = () => {
         };
 
         if (day && user) {
+
+            setIsLoading(true);
+
             day.count++;
-            day.dayCost += delivery.deliveryType?.cost ?? 0;
+            day.dayCost = fixedRound(day.dayCost + (delivery.deliveryType?.cost ?? 0), 2);
             if (delivery.paymentType?.addToDayCash) {
-                day.cashMoney += delivery.cost;
+                day.cashMoney = fixedRound(day.cashMoney + delivery.cost, 2);
             }
             if (day.deliveries) {
                 day.deliveries.push(delivery);
             } else {
                 day.deliveries = [delivery];
             }
-            updateDay(user.uid, day).then(() => nav(-1));
+
+            updateDay(user.uid, day).then(() => {
+                setIsLoading(false);
+                nav(-1);
+            });
         }
     }
 
     return (
         <Card title="Доставка" bordered={false}>
             <Space direction="vertical" style={{display: 'flex'}}>
-                <Form<IDeliveryForm> form={form} layout="vertical" onFinish={onFormSubmit}>
+                <Form<IDeliveryForm> form={form} layout="vertical" disabled={isLoading} onFinish={onFormSubmit}>
                     <Form.Item label="Дата" name="date">
                         <DatePicker allowClear={false} size="large" style={{minWidth: '100%'}} inputReadOnly/>
                     </Form.Item>
