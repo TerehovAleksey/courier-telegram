@@ -22,7 +22,7 @@ const PageLayout = () => {
                     {user ? <Outlet/> : <Navigate to="/courier-telegram/login"/>}
                 </PageContainer>
             </Content>
-            <Footer style={{textAlign: 'center'}}>Courier ©{dayjs().year()} - {user?.email}</Footer>
+            <Footer style={{textAlign: 'center'}}>Courier {import.meta.env.VITE_APP_VERSION} ©{dayjs().year()} - {user?.email}</Footer>
         </Layout>
     );
 };

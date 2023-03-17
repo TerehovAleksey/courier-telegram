@@ -28,3 +28,5 @@ export const calculateAddDay = (day: IDay, settings: ISettings, deliveryType: st
     calcProfit(day, settings, deliveryType);
     calcExpenses(day, settings);
 }
+
+export const fixedRound = (N: number, n: number) => Math.round(N * Math.pow(10, n)) / Math.pow(10, n);
