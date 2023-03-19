@@ -9,17 +9,17 @@ type MenuItem = Required<MenuProps>['items'][number];
 const items: MenuItem[] = [
     {
         label: 'Главная',
-        key: '/courier-telegram',
+        key: '/',
         icon: <HomeOutlined />,
     },
     {
         label: 'История',
-        key: '/courier-telegram/history',
+        key: '/history',
         icon: <HistoryOutlined />,
     },
     {
         label: 'Параметры',
-        key: '/courier-telegram/settings',
+        key: '/settings',
         icon: <SettingOutlined />,
     },
 ];
@@ -37,7 +37,7 @@ const MainMenu = () => {
     return (
         <Menu style={{margin: '0 auto'}} mode="horizontal"
               items={items}
-              defaultSelectedKeys={['/courier-telegram']}
+              defaultSelectedKeys={['/']}
               theme="dark"
               onClick={onClick}
               selectedKeys={[current]}

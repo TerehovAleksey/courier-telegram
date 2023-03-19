@@ -5,11 +5,11 @@ import {useNavigate} from "react-router-dom";
 const items: MenuProps['items'] = [
     {
         label: 'Вход',
-        key: '/courier-telegram/login',
+        key: '/login',
     },
     {
         label: 'Регистрация',
-        key: '/courier-telegram/register',
+        key: '/register',
     },
 ];
 

@@ -16,6 +16,9 @@ export function useAdapter() {
         }
     };
 
+    const showNoInternetAlert = () => showAlert('Произошла ошибка! Возможно отсутствует доступ к интернет или нестабильное соединение.');
+    const showUnknownAlert = () => showAlert('Ошибка! Попробуйте обновить страницу.');
+
     const showConfirm = (message: string, callback: () => void) => {
         if (tgEnabled) {
             tgConfirm(message, ok => {
@@ -41,5 +44,5 @@ export function useAdapter() {
         }
     }
 
-    return {showAlert, showConfirm, showNotification};
+    return {showAlert, showNoInternetAlert, showUnknownAlert, showConfirm, showNotification};
 }

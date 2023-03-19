@@ -1,13 +1,14 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import dayjs, {Dayjs} from "dayjs";
 import {useNavigate} from "react-router-dom";
 import {SettingsContext} from "../providers/SettingsProvider";
 import {AuthContext} from "../providers/AuthProvider";
 import {getCurrentDay, updateDay} from "../firebase/dayApi";
 import {Button, Card, DatePicker, Form, Input, InputNumber, Space, TimePicker} from "antd";
-import {tgBackButton, tgButton, tgEnabled} from "../helpers/telegram";
+import {tgBackButton, tgButton, tgButtonAwaiting, tgEnabled} from "../helpers/telegram";
 import {useAdapter} from "../hooks/useAdapter";
 import locale from 'antd/es/date-picker/locale/ru_RU';
+import CardLoader from "../components/CardLoader";
 
 interface IEndDayForm {
     date: Dayjs;
@@ -24,6 +25,7 @@ const EndDayPage = () => {
     const user = useContext(AuthContext);
     const [form] = Form.useForm();
     const {showAlert} = useAdapter();
+    const [loading, setLoading] = useState(false);
 
     const goBack = () => nav(-1);
 
@@ -46,6 +48,10 @@ const EndDayPage = () => {
         }
     }, []);
 
+    useEffect(() => {
+        tgButtonAwaiting(loading);
+    }, [loading]);
+
     const calcExpenses = (distance: number) =>
         distance * (settings?.fuelExpenses ?? 0) / 100 * (settings?.fuelCost ?? 0);
 
@@ -53,6 +59,7 @@ const EndDayPage = () => {
         let dateTime: Dayjs = dayjs(values.date);
         dateTime = dateTime.set("hour", values.time.hour());
         dateTime = dateTime.set("minutes", values.time.minute());
+        dateTime = dateTime.set("seconds", 0);
 
         if (user) {
             const day = await getCurrentDay(user.uid);
@@ -76,51 +83,59 @@ const EndDayPage = () => {
                 day.distance = values.distance;
                 day.expenses = calcExpenses(values.distance);
 
-                await updateDay(user.uid, day);
-                goBack();
+                setLoading(true);
+
+                updateDay(user.uid, day).then(() => {
+                    goBack();
+                }).finally(() => {
+                    setLoading(false);
+                })
+
             }
         }
     }
 
     return (
-        <Card title="Конец дня" bordered={false}>
-            <Space direction="vertical" style={{display: 'flex'}}>
-                <Form<IEndDayForm> form={form} layout="vertical" onFinish={onFormSubmit}>
-                    <Form.Item label="Дата" name="date">
-                        <DatePicker allowClear={false} locale={locale} size="large" style={{minWidth: '100%'}}
-                                    inputReadOnly/>
-                    </Form.Item>
-                    <Form.Item label="Время" name="time">
-                        <TimePicker allowClear={false} locale={locale} size="large" style={{minWidth: '100%'}}
-                                    inputReadOnly/>
-                    </Form.Item>
-                    <Form.Item label="Пробег, км." name="distance"
-                               rules={[{required: true, message: 'Укажите пройденное за день расстояние'}]}>
-                        <InputNumber
-                            size="large"
-                            min="0"
-                            step="0.01"
-                            style={{minWidth: '100%'}}
-                        />
-                    </Form.Item>
-                    <Form.Item label="Чаевые" name="cash"
-                               rules={[{required: true, message: 'Укажите сумму чаевых за день'}]}>
-                        <InputNumber
-                            size="large"
-                            min="0"
-                            step="0.01"
-                            style={{minWidth: '100%'}}
-                        />
-                    </Form.Item>
-                    <Form.Item label="Примечание" name="note">
-                        <Input size="large"/>
-                    </Form.Item>
-                    {!tgEnabled && <div style={{textAlign: 'center'}}>
-                        <Button htmlType="submit" type="primary" size="large">Закончить</Button>
-                    </div>}
-                </Form>
-            </Space>
-        </Card>
+        <CardLoader isLoading={loading}>
+            <Card title="Конец дня" bordered={false}>
+                <Space direction="vertical" style={{display: 'flex'}}>
+                    <Form<IEndDayForm> form={form} layout="vertical" onFinish={onFormSubmit}>
+                        <Form.Item label="Дата" name="date">
+                            <DatePicker allowClear={false} locale={locale} size="large" style={{minWidth: '100%'}}
+                                        inputReadOnly/>
+                        </Form.Item>
+                        <Form.Item label="Время" name="time">
+                            <TimePicker allowClear={false} locale={locale} size="large" style={{minWidth: '100%'}}
+                                        inputReadOnly showSecond={false}/>
+                        </Form.Item>
+                        <Form.Item label="Пробег, км." name="distance"
+                                   rules={[{required: true, message: 'Укажите пройденное за день расстояние'}]}>
+                            <InputNumber
+                                size="large"
+                                min="0"
+                                step="0.01"
+                                style={{minWidth: '100%'}}
+                            />
+                        </Form.Item>
+                        <Form.Item label="Чаевые" name="cash"
+                                   rules={[{required: true, message: 'Укажите сумму чаевых за день'}]}>
+                            <InputNumber
+                                size="large"
+                                min="0"
+                                step="0.01"
+                                style={{minWidth: '100%'}}
+                            />
+                        </Form.Item>
+                        <Form.Item label="Примечание" name="note">
+                            <Input size="large"/>
+                        </Form.Item>
+                        {!tgEnabled && <div style={{textAlign: 'center'}}>
+                            <Button htmlType="submit" type="primary" size="large">Закончить</Button>
+                        </div>}
+                    </Form>
+                </Space>
+            </Card>
+        </CardLoader>
     );
 };
 
