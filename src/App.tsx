@@ -28,7 +28,7 @@ function App() {
     return (
         <ThemeProvider>
             <AntdApp>
-                <HashRouter basename="/courier-telegram">
+                <HashRouter>
                     <Routes>
                         <Route path="/" element={<PageLayout/>}>
                             <Route index element={<HomePage/>}/>
