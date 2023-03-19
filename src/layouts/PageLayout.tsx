@@ -1,16 +1,42 @@
-import React, {useContext} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Navigate, Outlet} from "react-router-dom";
-import {AuthContext} from "../providers/AuthProvider";
+import {AuthProvider} from "../providers/AuthProvider";
 import {Layout} from "antd";
 import PageContainer from "../components/PageContainer";
-import dayjs from "dayjs";
 import MainMenu from "../components/MainMenu";
+import {User} from "firebase/auth";
+import {ISettings} from "../models/ISettings";
+import {auth} from "../firebase/firebase";
+import {tgEnabled, tgUser} from "../helpers/telegram";
+import {setTgUser} from "../firebase/userApi";
+import {settingsSubscriber} from "../firebase/settingsApi";
+import PageLoader from "../components/PageLoader";
+import {SettingsProvider} from "../providers/SettingsProvider";
+import PageFooter from "../components/PageFooter";
 
-const {Header, Content, Footer} = Layout;
+const {Header, Content} = Layout;
 
 const PageLayout = () => {
 
-    const user = useContext(AuthContext);
+    const [user, setUser] = useState<User | null | undefined>(undefined);
+    const [settings, setSettings] = useState<ISettings | null>(null);
+
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged(user => {
+            setUser(user);
+        });
+        return () => unsubscribe();
+    }, []);
+
+    useEffect(() => {
+        if (user) {
+            if (tgEnabled && tgUser) {
+                setTgUser(user.uid, tgUser);
+            }
+            const unsubscribe = settingsSubscriber(user.uid, settings => setSettings(settings));
+            return () => unsubscribe();
+        }
+    }, [user]);
 
     return (
         <Layout style={{minHeight: '100vh'}}>
@@ -19,10 +45,18 @@ const PageLayout = () => {
             </Header>
             <Content>
                 <PageContainer>
-                    {user ? <Outlet/> : <Navigate to="/courier-telegram/login"/>}
+                    {user === undefined && <PageLoader/>}
+                    {user === null && <Navigate to="/login"/>}
+                    {user &&
+                        <AuthProvider value={user}>
+                            <SettingsProvider value={settings}>
+                                <Outlet/>
+                            </SettingsProvider>
+                        </AuthProvider>
+                    }
                 </PageContainer>
             </Content>
-            <Footer style={{textAlign: 'center'}}>Courier {import.meta.env.VITE_APP_VERSION} ©{dayjs().year()} - {user?.email}</Footer>
+            <PageFooter user={user?.email}/>
         </Layout>
     );
 };

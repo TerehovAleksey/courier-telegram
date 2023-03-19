@@ -1,6 +1,6 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Button, Card, DatePicker, Form, InputNumber, Select, Space, TimePicker} from "antd";
-import {tgBackButton, tgButton, tgEnabled} from "../helpers/telegram";
+import {tgBackButton, tgButton, tgButtonAwaiting, tgEnabled} from "../helpers/telegram";
 import dayjs, {Dayjs} from "dayjs";
 import {AuthContext} from "../providers/AuthProvider";
 import {SettingsContext} from "../providers/SettingsProvider";
@@ -9,6 +9,7 @@ import {useNavigate} from "react-router-dom";
 import uuid from 'react-uuid';
 import {IDay} from "../models/IDay";
 import locale from 'antd/es/date-picker/locale/ru_RU';
+import CardLoader from "../components/CardLoader";
 
 interface IStartDayForm {
     date: Dayjs;
@@ -23,6 +24,7 @@ const StartDayPage = () => {
     const settings = useContext(SettingsContext);
     const user = useContext(AuthContext);
     const [form] = Form.useForm();
+    const [loading, setLoading] = useState(false);
 
     const goBack = () => nav(-1);
 
@@ -48,6 +50,10 @@ const StartDayPage = () => {
         }
     }, []);
 
+    useEffect(() => {
+        tgButtonAwaiting(loading);
+    }, [loading]);
+
     const onTemplateChange = (templateId: string) => {
         form.setFieldValue("money", settings?.templates.find(t => t.id === templateId)?.dayMoney ?? 0);
     }
@@ -56,6 +62,7 @@ const StartDayPage = () => {
         let dateTime: Dayjs = dayjs(values.date);
         dateTime = dateTime.set("hour", values.time.hour());
         dateTime = dateTime.set("minutes", values.time.minute());
+        dateTime = dateTime.set("seconds", 0);
 
         const day: IDay = {
             id: uuid(),
@@ -73,47 +80,52 @@ const StartDayPage = () => {
         }
 
         if (user) {
+            setLoading(true);
             createDay(user.uid, day).then(() => {
                 goBack();
+            }).finally(() => {
+                setLoading(false);
             });
         }
     }
 
     return (
-        <Card title="Начало дня" bordered={false}>
-            <Space direction="vertical" style={{display: 'flex'}}>
-                <Form<IStartDayForm> form={form} layout="vertical" onFinish={onFormSubmit}>
-                    <Form.Item label="Дата" name="date">
-                        <DatePicker allowClear={false} locale={locale} size="large" style={{minWidth: '100%'}}
-                                    inputReadOnly/>
-                    </Form.Item>
-                    <Form.Item label="Время" name="time">
-                        <TimePicker allowClear={false} locale={locale} size="large" style={{minWidth: '100%'}}
-                                    inputReadOnly/>
-                    </Form.Item>
-                    <Form.Item label="Шаблон" name="template" hidden={(settings?.templates.length ?? 0) < 2}
-                               rules={[{required: true, message: 'Выберете шаблон для продолжения'}]}>
-                        <Select
-                            onSelect={onTemplateChange}
-                            size="large"
-                            options={settings?.templates.map(t => ({value: t.id, label: t.name}))}
-                        />
-                    </Form.Item>
-                    <Form.Item label="Разменка" name="money"
-                               rules={[{required: true, message: 'Укажите сумму разменных денег'}]}>
-                        <InputNumber
-                            size="large"
-                            min="0"
-                            step="0.01"
-                            style={{minWidth: '100%'}}
-                        />
-                    </Form.Item>
-                    {!tgEnabled && <div style={{textAlign: 'center'}}>
-                        <Button htmlType="submit" type="primary" size="large">Начать</Button>
-                    </div>}
-                </Form>
-            </Space>
-        </Card>
+        <CardLoader isLoading={loading}>
+            <Card title="Начало дня" bordered={false}>
+                <Space direction="vertical" style={{display: 'flex'}}>
+                    <Form<IStartDayForm> form={form} layout="vertical" onFinish={onFormSubmit}>
+                        <Form.Item label="Дата" name="date">
+                            <DatePicker allowClear={false} locale={locale} size="large" style={{minWidth: '100%'}}
+                                        inputReadOnly/>
+                        </Form.Item>
+                        <Form.Item label="Время" name="time">
+                            <TimePicker allowClear={false} locale={locale} size="large" style={{minWidth: '100%'}}
+                                        inputReadOnly showSecond={false}/>
+                        </Form.Item>
+                        <Form.Item label="Шаблон" name="template" hidden={(settings?.templates.length ?? 0) < 2}
+                                   rules={[{required: true, message: 'Выберете шаблон для продолжения'}]}>
+                            <Select
+                                onSelect={onTemplateChange}
+                                size="large"
+                                options={settings?.templates.map(t => ({value: t.id, label: t.name}))}
+                            />
+                        </Form.Item>
+                        <Form.Item label="Разменка" name="money"
+                                   rules={[{required: true, message: 'Укажите сумму разменных денег'}]}>
+                            <InputNumber
+                                size="large"
+                                min="0"
+                                step="0.01"
+                                style={{minWidth: '100%'}}
+                            />
+                        </Form.Item>
+                        {!tgEnabled && <div style={{textAlign: 'center'}}>
+                            <Button htmlType="submit" type="primary" size="large">Начать</Button>
+                        </div>}
+                    </Form>
+                </Space>
+            </Card>
+        </CardLoader>
     );
 };
 
