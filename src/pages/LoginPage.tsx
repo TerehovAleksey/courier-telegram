@@ -42,9 +42,11 @@ const LoginPage = () => {
         setLoading(true);
         signInWithEmailAndPassword(getAuth(), values.email, values.password)
             .then(() => {
+                setLoading(false);
                 nav('/');
             })
             .catch(error => {
+                setLoading(false);
                 if (error.code === 'auth/user-not-found') {
                     showAlert('Пользователь не найден!');
                 } else if (error.code === 'auth/wrong-password') {
@@ -55,8 +57,7 @@ const LoginPage = () => {
                     console.log(error);
                     showUnknownAlert();
                 }
-            })
-            .finally(() => setLoading(false));
+            });
     }
 
     return (

@@ -1,9 +1,10 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {ISettings} from "../../../models/ISettings";
 import {Button, Card, Form, InputNumber, Space} from "antd";
 import {updateSettings} from "../../../firebase/settingsApi";
 import {AuthContext} from "../../../providers/AuthProvider";
 import {useAdapter} from "../../../hooks/useAdapter";
+import CardLoader from "../../../components/CardLoader";
 
 interface ISettingsForm {
     fuelCost: number;
@@ -19,6 +20,7 @@ const GeneralCard = ({settings}: GeneralCardProps) => {
     const user = useContext(AuthContext);
     const {showNotification} = useAdapter();
     const [form] = Form.useForm();
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         form.setFieldsValue({"fuelCost": settings?.fuelCost ?? 0, "fuelExpenses": settings?.fuelExpenses ?? 0});
@@ -26,38 +28,43 @@ const GeneralCard = ({settings}: GeneralCardProps) => {
 
     const onFormSubmit = (values: ISettingsForm) => {
         if (user) {
+            setLoading(true);
             const result = {...settings, fuelCost: values.fuelCost, fuelExpenses: values.fuelExpenses} as ISettings;
             updateSettings(user.uid, result)
-                .then(() => showNotification("Параметры успешно обновлены!"));
+                .then(() => showNotification("Параметры успешно обновлены!"))
+                .finally(() => setLoading(false));
         }
     }
 
     return (
-        <Card title="Основные параметры" bordered={false}>
-            <Space direction="vertical" style={{display: 'flex'}}>
-                <Form<ISettingsForm> form={form} layout="vertical" onFinish={onFormSubmit}>
-                    <Form.Item label="Стоимость топлива" name="fuelCost"
-                               rules={[{required: true, message: 'Укажите стоимость топлива'}]}>
-                        <InputNumber
-                            size="large"
-                            min="0"
-                            step="0.01"
-                            style={{minWidth: '100%'}}
-                        />
-                    </Form.Item>
-                    <Form.Item label="Расход топлива" name="fuelExpenses"
-                               rules={[{required: true, message: 'Укажите расход топлива'}]}>
-                        <InputNumber
-                            size="large"
-                            min="0"
-                            step="0.01"
-                            style={{minWidth: '100%'}}
-                        />
-                    </Form.Item>
-                    <Button htmlType="submit" type="primary">Обновить</Button>
-                </Form>
-            </Space>
-        </Card>
+        <CardLoader isLoading={loading}>
+            <Card title="Основные параметры" bordered={false}>
+                <Space direction="vertical" style={{display: 'flex'}}>
+                    <Form<ISettingsForm> form={form} layout="vertical" onFinish={onFormSubmit}
+                                         disabled={loading}>
+                        <Form.Item label="Стоимость топлива" name="fuelCost"
+                                   rules={[{required: true, message: 'Укажите стоимость топлива'}]}>
+                            <InputNumber
+                                size="large"
+                                min="0"
+                                step="0.01"
+                                style={{minWidth: '100%'}}
+                            />
+                        </Form.Item>
+                        <Form.Item label="Расход топлива" name="fuelExpenses"
+                                   rules={[{required: true, message: 'Укажите расход топлива'}]}>
+                            <InputNumber
+                                size="large"
+                                min="0"
+                                step="0.01"
+                                style={{minWidth: '100%'}}
+                            />
+                        </Form.Item>
+                        <Button htmlType="submit" type="primary">Обновить</Button>
+                    </Form>
+                </Space>
+            </Card>
+        </CardLoader>
     );
 };
 

@@ -1,7 +1,7 @@
 import React from "react";
 import ThemeProvider from "./providers/ThemeProvider";
 import {App as AntdApp} from 'antd';
-import {HashRouter, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 import PageLayout from "./layouts/PageLayout";
 import HomePage from "./pages/HomePage";
 import StartDayPage from "./pages/StartDayPage";
@@ -28,9 +28,9 @@ function App() {
     return (
         <ThemeProvider>
             <AntdApp>
-                <HashRouter>
+                <BrowserRouter basename="/courier-telegram">
                     <Routes>
-                        <Route path="/" element={<PageLayout/>}>
+                        <Route path="" element={<PageLayout/>}>
                             <Route index element={<HomePage/>}/>
                             <Route path="start" element={<StartDayPage/>}/>
                             <Route path="delivery" element={<DeliveryPage/>}/>
@@ -39,6 +39,7 @@ function App() {
                             <Route path="history" element={<HistoryPage/>}/>
                             <Route path="settings" element={<SettingsPage/>}/>
                             <Route path="settings/template" element={<TemplatePage/>}/>
+                            <Route path="settings/template/:id" element={<TemplatePage/>}/>
                             <Route path="/*" element={<NotFoundPage/>}/>
                         </Route>
                         <Route path="/" element={<EmptyLayout/>}>
@@ -46,7 +47,7 @@ function App() {
                             <Route path="register" element={<RegisterPage/>}/>
                         </Route>
                     </Routes>
-                </HashRouter>
+                </BrowserRouter>
             </AntdApp>
         </ThemeProvider>
     )

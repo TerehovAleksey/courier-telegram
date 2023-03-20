@@ -12,6 +12,7 @@ import {IDay} from "../models/IDay";
 import uuid from "react-uuid";
 import {createDay} from "../firebase/dayApi";
 import locale from 'antd/es/date-picker/locale/ru_RU';
+import CardLoader from "../components/CardLoader";
 
 interface IDayForm {
     dateStart: Dayjs;
@@ -35,6 +36,7 @@ const DayPage = () => {
     const {showAlert} = useAdapter();
 
     const [deliveryTypes, setDeliveryTypes] = useState<IDeliveryType[] | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         let template = settings?.templates.find(t => t.isDefault);
@@ -111,6 +113,8 @@ const DayPage = () => {
             return;
         }
 
+        setLoading(true);
+
         const day: IDay = {
             id: uuid(),
             startTime: dateTimeStart.toDate(),
@@ -129,11 +133,14 @@ const DayPage = () => {
         calculateAddDay(day, settings, values.deliveryTypeId);
 
         createDay(user.uid, day)
-            .then(() => nav(-1));
+            .then(() => {
+                setLoading(false);
+                nav(-1);
+            });
     }
 
     return (
-        <Space direction="vertical" style={{display: 'flex'}}>
+        <CardLoader isLoading={loading}>
             <Card title="Новый день" bordered={false}>
                 <Space direction="vertical" style={{display: 'flex'}}>
                     <Form<IDayForm> form={form} layout="vertical" onFinish={onFormSubmit}>
@@ -216,7 +223,7 @@ const DayPage = () => {
                     </Form>
                 </Space>
             </Card>
-        </Space>
+        </CardLoader>
     );
 };
 

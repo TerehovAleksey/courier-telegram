@@ -13,6 +13,7 @@ import {tgBackButton, tgButton, tgButtonAwaiting, tgEnabled} from "../helpers/te
 import {useAdapter} from "../hooks/useAdapter";
 import {fixedRound} from "../helpers/dayCalculation";
 import CardLoader from "../components/CardLoader";
+import locale from "antd/es/date-picker/locale/ru_RU";
 
 interface IDeliveryForm {
     date: Dayjs;
@@ -139,11 +140,11 @@ const DeliveryPage = () => {
                 day.deliveries = [delivery];
             }
 
-            updateDay(user.uid, day).then(() => {
-                nav(-1);
-            }).finally(() => {
-                setLoading(false);
-            });
+            updateDay(user.uid, day)
+                .then(() => {
+                    setLoading(false);
+                    nav(-1);
+                });
         }
     }
 
@@ -153,11 +154,12 @@ const DeliveryPage = () => {
                 <Space direction="vertical" style={{display: 'flex'}}>
                     <Form<IDeliveryForm> form={form} layout="vertical" disabled={loading} onFinish={onFormSubmit}>
                         <Form.Item label="Дата" name="date">
-                            <DatePicker allowClear={false} size="large" style={{minWidth: '100%'}} inputReadOnly/>
+                            <DatePicker allowClear={false} size="large" style={{minWidth: '100%'}}
+                                        locale={locale} inputReadOnly/>
                         </Form.Item>
                         <Form.Item label="Время" name="time">
                             <TimePicker allowClear={false} size="large" style={{minWidth: '100%'}}
-                                        inputReadOnly showSecond={false}/>
+                                        locale={locale} inputReadOnly showSecond={false}/>
                         </Form.Item>
                         <Form.Item label="Номер" name="number">
                             <Input size="large"/>

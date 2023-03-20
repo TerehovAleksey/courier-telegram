@@ -17,7 +17,7 @@ interface ISignUpForm {
 const RegisterPage = () => {
 
     const [form] = Form.useForm();
-    const {showAlert} = useAdapter();
+    const {showAlert, showNoInternetAlert, showUnknownAlert} = useAdapter();
     const [loading, setLoading] = useState(false);
     const nav = useNavigate();
 
@@ -41,17 +41,20 @@ const RegisterPage = () => {
         setLoading(true);
         createUserWithEmailAndPassword(getAuth(), values.email, values.password)
             .then(() => {
+                setLoading(false);
                 nav('/');
             })
             .catch(error => {
-                console.log(error);
+                setLoading(false);
                 if (error.code === 'auth/email-already-in-use') {
                     showAlert('Пользователь с таким email уже зарегистрирован');
+                } else if (error.code === 'auth/internal-error') {
+                    showNoInternetAlert();
                 } else {
-                    showAlert('Произошла ошибка при создании пользователя');
+                    console.log(error);
+                    showUnknownAlert();
                 }
-            })
-            .finally(() => setLoading(false));
+            });
     }
 
     return (

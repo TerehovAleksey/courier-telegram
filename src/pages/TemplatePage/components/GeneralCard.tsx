@@ -10,10 +10,10 @@ interface ITemplateForm {
 type GeneralCardProps = {
     initialValues: ITemplateForm;
     form: FormInstance<any>;
-    onFormSubmit: (values: ITemplateForm) => void;
+    onChanged: (values: ITemplateForm) => void;
 };
 
-const GeneralCard = ({initialValues, form, onFormSubmit}: GeneralCardProps) => {
+const GeneralCard = ({initialValues, form, onChanged}: GeneralCardProps) => {
 
     useEffect(() => {
         form.setFieldsValue({
@@ -26,7 +26,7 @@ const GeneralCard = ({initialValues, form, onFormSubmit}: GeneralCardProps) => {
     return (
         <Card title="Новый шаблон" bordered={false}>
             <Space direction="vertical" style={{display: 'flex'}}>
-                <Form<ITemplateForm> form={form} layout="vertical" onFinish={onFormSubmit}>
+                <Form<ITemplateForm> form={form} layout="vertical" onValuesChange={(_, values) => onChanged(values)}>
                     <Form.Item label="Название" name="name"
                                rules={[{required: true, message: 'Укажите название шаблона'}]}>
                         <Input size="large"/>
