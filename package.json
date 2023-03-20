@@ -1,7 +1,7 @@
 {
   "name": "courier-telegram",
   "private": true,
-  "version": "0.6.0",
+  "version": "0.6.4",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,6 +14,7 @@
     "dayjs": "^1.11.7",
     "firebase": "^9.17.2",
     "react": "^18.2.0",
+    "react-countup": "^6.4.2",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.9.0",
     "react-uuid": "^2.0.0",
