@@ -36,7 +36,7 @@ const DayPage = () => {
     const {showAlert} = useAdapter();
 
     const [deliveryTypes, setDeliveryTypes] = useState<IDeliveryType[] | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         let template = settings?.templates.find(t => t.isDefault);
