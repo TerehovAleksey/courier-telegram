@@ -1,5 +1,6 @@
-export interface IDeliveryType {
-    id: string;
+import {IIdentityModel} from "./IIdentityModel";
+
+export interface IDeliveryType extends IIdentityModel{
     name: string;
     isDefault: boolean;
     cost: number;

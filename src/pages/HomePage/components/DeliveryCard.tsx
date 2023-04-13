@@ -1,31 +1,28 @@
-import {Button, Card, List, Space, Typography} from 'antd';
-import React from 'react';
-import {useNavigate} from "react-router-dom";
+import {Button, Card, Space, Typography} from "antd";
+import React from "react";
 import {IDay} from "../../../models/IDay";
+import {EditList} from "../../../components/EditList";
 
 type DeliveryCardProps = {
     day: IDay | null;
+    onAddDelivery: () => void;
+    onEditDelivery: (deliveryId: string) => void;
+    onDeleteDelivery: (deliveryId: string) => void;
 }
 
-
-const DeliveryCard = ({day}: DeliveryCardProps) => {
-
-    const nav = useNavigate();
-
+const DeliveryCard = ({day, onAddDelivery, onEditDelivery, onDeleteDelivery}: DeliveryCardProps) => {
     return (
         <Card title="Доставки" bordered={false}>
-            <Space direction="vertical" style={{display: 'flex'}}>
+            <Space direction="vertical" style={{display: "flex"}}>
                 {(day === null || day.deliveries.length === 0) ?
                     <Typography>Доставок пока нет</Typography> :
-                    <List itemLayout="horizontal" dataSource={day.deliveries}
-                          renderItem={(item) => (
-                              <List.Item>
-                                  <List.Item.Meta title={`#${item.number} (${item.address}) - ${item.dateTime.toLocaleTimeString()}`}
-                                                  description={`${item.cost} - ${item.paymentType?.name}`}/>
-                              </List.Item>
-                          )}/>
+                    <EditList items={day.deliveries}
+                              title={item => `#${item.number} (${item.address}) - ${item.dateTime.toLocaleTimeString()}`}
+                              description={item => `${item.cost} - ${item.paymentType?.name}`}
+                              onItemEdit={onEditDelivery}
+                              onItemDelete={onDeleteDelivery}/>
                 }
-                <Button type="primary" onClick={() => nav("delivery")}>Добавить</Button>
+                <Button type="primary" onClick={onAddDelivery}>Добавить</Button>
             </Space>
         </Card>
     );

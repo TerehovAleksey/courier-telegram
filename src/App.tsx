@@ -1,6 +1,6 @@
 import React from "react";
 import ThemeProvider from "./providers/ThemeProvider";
-import {App as AntdApp} from 'antd';
+import {App as AntdApp} from "antd";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import PageLayout from "./layouts/PageLayout";
 import HomePage from "./pages/HomePage";
@@ -16,11 +16,11 @@ import TemplatePage from "./pages/TemplatePage";
 import DayPage from "./pages/DayPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import dayjs from "dayjs";
-import 'dayjs/locale/ru.js';
-import updateLocale from 'dayjs/plugin/updateLocale';
+import "dayjs/locale/ru.js";
+import updateLocale from "dayjs/plugin/updateLocale";
 
 dayjs.extend(updateLocale);
-dayjs.updateLocale('ru', {
+dayjs.updateLocale("ru", {
     weekStart: 1,
 });
 
@@ -50,7 +50,7 @@ function App() {
                 </BrowserRouter>
             </AntdApp>
         </ThemeProvider>
-    )
+    );
 }
 
-export default App
+export default App;

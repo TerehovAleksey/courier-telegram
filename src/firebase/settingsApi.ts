@@ -10,14 +10,14 @@ const createSettings = (userId: string) => {
         templates: [
             {
                 id: uuid(),
-                name: 'Yandex-доставка',
+                name: "Yandex-доставка",
                 isDefault: true,
                 dayMoney: 80,
                 hourCost: 2.02,
                 deliveryTypes: [
                     {
                         id: uuid(),
-                        name: 'Драйвер',
+                        name: "Драйвер",
                         isDefault: true,
                         cost: 2.15,
                     },
@@ -25,19 +25,19 @@ const createSettings = (userId: string) => {
                 paymentTypes: [
                     {
                         id: uuid(),
-                        name: 'Наличные',
+                        name: "Наличные",
                         isDefault: false,
                         addToDayCash: true,
                     },
                     {
                         id: uuid(),
-                        name: 'Карта',
+                        name: "Карта",
                         isDefault: false,
                         addToDayCash: false,
                     },
                     {
                         id: uuid(),
-                        name: 'Оплачено на сайте',
+                        name: "Оплачено на сайте",
                         isDefault: true,
                         addToDayCash: false,
                     },
@@ -45,8 +45,8 @@ const createSettings = (userId: string) => {
             },
         ],
     };
-    return setDoc(doc(db,'Settings', userId), data);
-}
+    return setDoc(doc(db,"Settings", userId), data);
+};
 
 export const settingsSubscriber = (userId: string, onSettingsChanged: (settings: ISettings | null) => void,) => {
     const settingsDoc = doc(db, `Settings/${userId}`);
@@ -54,8 +54,8 @@ export const settingsSubscriber = (userId: string, onSettingsChanged: (settings:
         if (snapshot.data() === undefined) {
             createSettings(userId);
         }
-        onSettingsChanged(snapshot.data() as ISettings ?? null)
+        onSettingsChanged(snapshot.data() as ISettings ?? null);
     });
-}
+};
 
-export const updateSettings = (userId: string, settings: ISettings) => setDoc(doc(db,'Settings', userId), settings);
+export const updateSettings = (userId: string, settings: ISettings) => setDoc(doc(db,"Settings", userId), settings);

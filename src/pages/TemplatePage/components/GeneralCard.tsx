@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect} from "react";
 import {Card, Form, FormInstance, Input, InputNumber, Space} from "antd";
 
 interface ITemplateForm {
@@ -9,7 +9,7 @@ interface ITemplateForm {
 
 type GeneralCardProps = {
     initialValues: ITemplateForm;
-    form: FormInstance<any>;
+    form: FormInstance;
     onChanged: (values: ITemplateForm) => void;
 };
 
@@ -25,28 +25,28 @@ const GeneralCard = ({initialValues, form, onChanged}: GeneralCardProps) => {
 
     return (
         <Card title="Новый шаблон" bordered={false}>
-            <Space direction="vertical" style={{display: 'flex'}}>
+            <Space direction="vertical" style={{display: "flex"}}>
                 <Form<ITemplateForm> form={form} layout="vertical" onValuesChange={(_, values) => onChanged(values)}>
                     <Form.Item label="Название" name="name"
-                               rules={[{required: true, message: 'Укажите название шаблона'}]}>
+                               rules={[{required: true, message: "Укажите название шаблона"}]}>
                         <Input size="large"/>
                     </Form.Item>
                     <Form.Item label="Оплата за час" name="hourCost"
-                               rules={[{required: true, message: 'Укажите стоимость часа работы'}]}>
+                               rules={[{required: true, message: "Укажите стоимость часа работы"}]}>
                         <InputNumber
                             size="large"
                             min="0"
                             step="0.01"
-                            style={{minWidth: '100%'}}
+                            style={{minWidth: "100%"}}
                         />
                     </Form.Item>
                     <Form.Item label="Разменка" name="dayMoney"
-                               rules={[{required: true, message: 'Укажите количество разменных денег'}]}>
+                               rules={[{required: true, message: "Укажите количество разменных денег"}]}>
                         <InputNumber
                             size="large"
                             min="0"
                             step="0.01"
-                            style={{minWidth: '100%'}}
+                            style={{minWidth: "100%"}}
                         />
                     </Form.Item>
                 </Form>

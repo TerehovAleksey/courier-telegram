@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext} from "react";
 import {auth} from "../../firebase/firebase";
 import {SettingsContext} from "../../providers/SettingsProvider";
 import GeneralCard from "./components/GeneralCard";
@@ -16,11 +16,11 @@ const SettingsPage = () => {
         <>
             {
                 settings ?
-                    <Space direction="vertical" style={{display: 'flex'}}>
+                    <Space direction="vertical" style={{display: "flex"}}>
                         <GeneralCard settings={settings}/>
                         <TemplatesCard settings={settings}/>
-                        <Button type="text" danger style={{width: '100%'}}
-                                onClick={() => showConfirm('Вы уверены, что хотите выйти?', () => auth.signOut())}>Выход</Button>
+                        <Button type="text" danger style={{width: "100%"}}
+                                onClick={() => showConfirm("Вы уверены, что хотите выйти?", () => auth.signOut())}>Выход</Button>
                     </Space> :
                     <PageLoader/>
             }

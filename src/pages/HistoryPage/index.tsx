@@ -1,22 +1,18 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from "react";
 import GeneralCard from "./components/GeneralCard";
 import {Space} from "antd";
 import FilterCard from "./components/FilterCard";
-//import {SettingsContext} from "../../providers/SettingsProvider";
-//import {DefaultOptionType} from 'antd/es/select';
 import {getDays} from "../../firebase/historyApi";
 import {AuthContext} from "../../providers/AuthProvider";
 import {IDay} from "../../models/IDay";
+import SelectorCard from "./components/SelectorCard";
 
-//const emptySelector: DefaultOptionType[] = [{label: "Все", value: 'all'}];
+const DEFAULT_KEY = "all";
 
 const HistoryPage = () => {
 
-    //const settings = useContext(SettingsContext);
     const user = useContext(AuthContext);
-    // const [form] = Form.useForm();
-
-    //const [selector, setSelector] = useState(emptySelector);
+    const [templateId, setTemplateId] = useState(DEFAULT_KEY);
     const [days, setDays] = useState<IDay[] | null>(null);
 
     useEffect(() => {
@@ -25,32 +21,20 @@ const HistoryPage = () => {
         }
     }, []);
 
-    // useEffect(() => {
-    //     if (settings) {
-    //         setSelector(emptySelector.concat(settings.templates.map(t => ({label: t.name, value: t.id}))));
-    //     }
-    // }, [settings]);
+    const filtered: IDay[] = useMemo(() => {
+        if (templateId === DEFAULT_KEY) {
+            return days ?? [];
+        } else {
+            return days?.filter(d => d.templateId === templateId) ?? [];
+        }
+    }, [templateId, days]);
 
-    // useEffect(() => {
-    //     form.setFieldValue("templateId", selector[0].value);
-    // }, [selector]);
 
     return (
-        <Space direction="vertical" style={{display: 'flex'}}>
-            {/*<Card>*/}
-            {/*    <Form form={form} layout="vertical">*/}
-            {/*        <Form.Item label="Шаблон" name="templateId"*/}
-            {/*                   rules={[{required: true, message: 'Выберете шаблон'}]}>*/}
-            {/*            <Select*/}
-            {/*                size="large"*/}
-            {/*                onChange={e => console.log(e)}*/}
-            {/*                options={selector}*/}
-            {/*            />*/}
-            {/*        </Form.Item>*/}
-            {/*    </Form>*/}
-            {/*</Card>*/}
-            <GeneralCard days={days ?? []}/>
-            <FilterCard days={days ?? []}/>
+        <Space direction="vertical" style={{display: "flex"}}>
+            <SelectorCard defaultKey={DEFAULT_KEY} onSelect={setTemplateId}/>
+            <GeneralCard days={filtered}/>
+            <FilterCard days={filtered}/>
         </Space>
     );
 };

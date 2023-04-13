@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from "react";
 import {Button, Form, Space} from "antd";
 import GeneralCard from "./components/GeneralCard";
 import DeliveryTypesCard from "./components/DeliveryTypesCard";
@@ -17,7 +17,7 @@ import CardLoader from "../../components/CardLoader";
 const TemplatePage = () => {
 
     const nav = useNavigate();
-    let {id} = useParams();
+    const {id} = useParams();
     const settings = useContext(SettingsContext);
     const user = useContext(AuthContext);
     const [form] = Form.useForm();
@@ -27,8 +27,8 @@ const TemplatePage = () => {
 
     const [loading, setLoading] = useState(false);
     const [template, setTemplate] = useState<ITemplate>({
-        id: '',
-        name: '',
+        id: "",
+        name: "",
         hourCost: 0,
         dayMoney: 0,
         paymentTypes: [],
@@ -38,7 +38,7 @@ const TemplatePage = () => {
 
     useEffect(() => {
         if (tgEnabled) {
-            tgButton.text = 'Сохранить';
+            tgButton.text = "Сохранить";
             tgButton.show();
             tgBackButton.onClick(goBack);
             tgBackButton.show();
@@ -46,7 +46,7 @@ const TemplatePage = () => {
                 tgButton.hide();
                 tgBackButton.offClick(goBack);
                 tgBackButton.hide();
-            }
+            };
         }
     }, []);
 
@@ -55,7 +55,7 @@ const TemplatePage = () => {
             tgButton.onClick(save);
             return () => {
                 tgButton.offClick(save);
-            }
+            };
         }
     }, [template]);
 
@@ -114,7 +114,7 @@ const TemplatePage = () => {
     const errorAlert = () => showAlert("Проверьте, что все заполнено правильно и есть хотя бы один тип оплаты и один тип доставки!");
 
     return (
-        <Space direction="vertical" style={{display: 'flex'}}>
+        <Space direction="vertical" style={{display: "flex"}}>
             <CardLoader isLoading={loading}>
                 <GeneralCard form={form} initialValues={template}
                              onChanged={val => setTemplate(state => ({
@@ -132,7 +132,7 @@ const TemplatePage = () => {
                 <PaymentTypesCard paymentTypes={template.paymentTypes} onChanged={pt =>
                     setTemplate(state => ({...state, paymentTypes: pt}))}/>
             </CardLoader>
-            {!tgEnabled && <div style={{textAlign: 'center'}}>
+            {!tgEnabled && <div style={{textAlign: "center"}}>
                 <Button type="primary" size="large" disabled={loading} onClick={save}>Сохранить</Button>
             </div>}
         </Space>

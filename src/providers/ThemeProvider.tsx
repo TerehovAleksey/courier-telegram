@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState} from "react";
 import {ConfigProvider, ThemeConfig, theme} from "antd";
 
 const tg = window.Telegram.WebApp;
-const detectDarkMode = () => window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? 'dark' : 'light';
+const detectDarkMode = () => window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 const config: ThemeConfig = {
     algorithm: theme.defaultAlgorithm
-}
+};
 
 type ThemeProviderProps = {
     children: React.ReactNode
@@ -19,8 +19,8 @@ const ThemeProvider = ({children}: ThemeProviderProps) => {
     const [themeConfig, setThemeConfig] = useState<ThemeConfig>(config);
 
     useEffect(() => {
-        const isTgEnv = tg.platform !== 'unknown';
-        console.log(isTgEnv ? 'Выполнение с среде телеграм' : 'Выполнение в браузере');
+        const isTgEnv = tg.platform !== "unknown";
+        console.log(isTgEnv ? "Выполнение с среде телеграм" : "Выполнение в браузере");
         if (isTgEnv) {
             bindColorScheme();
             tg.onEvent("themeChanged", () => {
@@ -32,7 +32,7 @@ const ThemeProvider = ({children}: ThemeProviderProps) => {
                 .matchMedia("(prefers-color-scheme: dark)")
                 .addEventListener("change", (event) => {
                     const isDarkTheme = event.matches;
-                    setColorMode(isDarkTheme ? 'dark' : 'light');
+                    setColorMode(isDarkTheme ? "dark" : "light");
                 });
         }
     }, []);
@@ -40,7 +40,7 @@ const ThemeProvider = ({children}: ThemeProviderProps) => {
     useEffect(() => {
         setThemeConfig(config => ({
             ...config,
-            algorithm: colorMode === 'dark' ? theme.darkAlgorithm : theme.defaultAlgorithm
+            algorithm: colorMode === "dark" ? theme.darkAlgorithm : theme.defaultAlgorithm
         }));
     }, [colorMode]);
 
