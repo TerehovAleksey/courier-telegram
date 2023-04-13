@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 type PageContainerProps = {
     children: React.ReactNode
@@ -6,7 +6,7 @@ type PageContainerProps = {
 
 const PageContainer = ({children}: PageContainerProps) => {
     return (
-        <div style={{maxWidth: 420, width: '100%', margin: '0 auto', padding: 10}}>
+        <div style={{maxWidth: 420, width: "100%", margin: "0 auto", padding: 10}}>
             {children}
         </div>
     );

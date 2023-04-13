@@ -12,14 +12,14 @@ export const getCurrentDay = (userId: string) => {
             deliveries: data.deliveries.map((d: { dateTime: { toDate: () => any; }; }) => ({...d, dateTime: d.dateTime.toDate()}))
         } as IDay : null;
     });
-}
+};
 
 export const createDay = (userId: string, day: IDay) => {
-    const docRef = doc(db, 'Days', userId, 'UserDays', day.id);
+    const docRef = doc(db, "Days", userId, "UserDays", day.id);
     return setDoc(docRef, day);
-}
+};
 
 export const updateDay = (userId: string, day: IDay) => {
-    const docRef = doc(db, 'Days', userId, 'UserDays', day.id);
+    const docRef = doc(db, "Days", userId, "UserDays", day.id);
     return updateDoc(docRef, {...day});
-}
+};

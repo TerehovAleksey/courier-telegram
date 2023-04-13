@@ -1,5 +1,5 @@
-import {Button, Card, Space, Typography} from 'antd';
-import React, {useEffect} from 'react';
+import {Button, Card, Space, Typography} from "antd";
+import React, {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import {tgButton, tgEnabled} from "../../../helpers/telegram";
 
@@ -10,13 +10,13 @@ const StartDayCard = () => {
 
     useEffect(() => {
         if (tgEnabled) {
-            tgButton.text = 'Начать день';
+            tgButton.text = "Начать день";
             tgButton.onClick(startDay);
             tgButton.show();
             return () => {
                 tgButton.offClick(startDay);
                 tgButton.hide();
-            }
+            };
         }
     }, []);
 

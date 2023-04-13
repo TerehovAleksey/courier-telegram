@@ -1,15 +1,15 @@
-import React, {useState} from 'react';
+import React, {useState} from "react";
 import {Menu, MenuProps} from "antd";
 import {useNavigate} from "react-router-dom";
 
-const items: MenuProps['items'] = [
+const items: MenuProps["items"] = [
     {
-        label: 'Вход',
-        key: '/login',
+        label: "Вход",
+        key: "/login",
     },
     {
-        label: 'Регистрация',
-        key: '/register',
+        label: "Регистрация",
+        key: "/register",
     },
 ];
 
@@ -18,7 +18,7 @@ const AuthMenu = () => {
     const nav = useNavigate();
     const [current, setCurrent] = useState(items[0]?.key?.toString() ?? "");
 
-    const onClick: MenuProps['onClick'] = (e) => {
+    const onClick: MenuProps["onClick"] = (e) => {
         setCurrent(e.key);
         nav(e.key);
     };

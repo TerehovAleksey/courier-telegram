@@ -1,7 +1,7 @@
-import {IDelivery} from './IDelivery';
+import {IDelivery} from "./IDelivery";
+import {IIdentityModel} from "./IIdentityModel";
 
-export interface IDay {
-    id: string;
+export interface IDay extends IIdentityModel {
     startTime: Date;
     endTime: Date | null;
     count: number;

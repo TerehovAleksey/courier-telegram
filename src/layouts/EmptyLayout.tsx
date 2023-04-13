@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState} from "react";
 import {Navigate, Outlet} from "react-router-dom";
 import {Layout} from "antd";
 import PageContainer from "../components/PageContainer";
@@ -18,15 +18,15 @@ const EmptyLayout = () => {
     }, []);
 
     return (
-        <Layout style={{minHeight: '100vh'}}>
+        <Layout style={{minHeight: "100vh"}}>
             <Header style={{
-                position: 'sticky',
+                position: "sticky",
                 top: 0,
                 zIndex: 1,
-                width: '100%',
+                width: "100%",
                 padding: 0,
                 display: "flex",
-                justifyContent: 'center'
+                justifyContent: "center"
             }}>
                 <AuthMenu/>
             </Header>

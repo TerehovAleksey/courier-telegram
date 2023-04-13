@@ -1,8 +1,8 @@
-import {IDeliveryType} from './IDeliveryType';
-import {IPaymentType} from './IPaymentType';
+import {IDeliveryType} from "./IDeliveryType";
+import {IPaymentType} from "./IPaymentType";
+import {IIdentityModel} from "./IIdentityModel";
 
-export interface ITemplate {
-    id: string;
+export interface ITemplate extends IIdentityModel{
     name: string;
     isDefault: boolean;
     hourCost: number;

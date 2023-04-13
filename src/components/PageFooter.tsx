@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {Layout} from "antd";
 import dayjs from "dayjs";
 
@@ -10,8 +10,8 @@ type PageFooterProps = {
 
 const PageFooter = ({user}: PageFooterProps) => {
     return (
-        <Footer style={{textAlign: 'center'}}>
-            Courier {import.meta.env.VITE_APP_VERSION} ©{dayjs().year()}{user ? ` - ${user}` : ''}
+        <Footer style={{textAlign: "center"}}>
+            Courier {import.meta.env.VITE_APP_VERSION} ©{dayjs().year()}{user ? ` - ${user}` : ""}
         </Footer>
     );
 };

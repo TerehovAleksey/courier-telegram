@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState} from "react";
 import {Card, Col, Row, Statistic} from "antd";
 import {IDay} from "../../../models/IDay";
-import CountUp from 'react-countup';
+import CountUp from "react-countup";
 import {valueType} from "antd/es/statistic/utils";
 
 type GeneralCardProps = {

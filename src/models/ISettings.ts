@@ -1,4 +1,4 @@
-import {ITemplate} from './ITemplate';
+import {ITemplate} from "./ITemplate";
 
 export interface ISettings {
     fuelCost: number;

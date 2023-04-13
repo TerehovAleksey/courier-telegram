@@ -1,4 +1,4 @@
-import {App} from 'antd';
+import {App} from "antd";
 import {tgAlert, tgConfirm, tgEnabled} from "../helpers/telegram";
 
 export function useAdapter() {
@@ -16,8 +16,8 @@ export function useAdapter() {
         }
     };
 
-    const showNoInternetAlert = () => showAlert('Произошла ошибка! Возможно отсутствует доступ к интернет или нестабильное соединение.');
-    const showUnknownAlert = () => showAlert('Ошибка! Попробуйте обновить страницу.');
+    const showNoInternetAlert = () => showAlert("Произошла ошибка! Возможно отсутствует доступ к интернет или нестабильное соединение.");
+    const showUnknownAlert = () => showAlert("Ошибка! Попробуйте обновить страницу.");
 
     const showConfirm = (message: string, callback: () => void) => {
         if (tgEnabled) {
@@ -25,16 +25,16 @@ export function useAdapter() {
                 if (ok) {
                     callback();
                 }
-            })
+            });
         } else {
             modal.confirm({
                 content: message,
                 onOk: () => callback(),
-                okText: 'Да',
-                cancelText: 'Отмена'
+                okText: "Да",
+                cancelText: "Отмена"
             });
         }
-    }
+    };
 
     const showNotification = (message: string) => {
         if (tgEnabled) {
@@ -42,7 +42,7 @@ export function useAdapter() {
         } else {
             notification.success({message});
         }
-    }
+    };
 
     return {showAlert, showNoInternetAlert, showUnknownAlert, showConfirm, showNotification};
 }
