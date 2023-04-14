@@ -44,7 +44,7 @@ const DeliveryPage = () => {
 
     useEffect(() => {
         if (tgEnabled) {
-            tgButton.text = "Добавить доставку";
+            tgButton.text = edited ? "Изменить" : "Добавить доставку";
             tgButton.onClick(form.submit);
             tgButton.show();
             tgBackButton.onClick(goBack);
