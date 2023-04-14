@@ -124,13 +124,14 @@ const EndDayPage = () => {
                             <TimePicker allowClear={false} locale={locale} size="large" style={{minWidth: "100%"}}
                                         inputReadOnly showSecond={false}/>
                         </Form.Item>
-                        <Form.Item label="Пробег, км." name="distance"
+                        <Form.Item label="Пробег" name="distance"
                                    rules={[{required: true, message: "Укажите пройденное за день расстояние"}]}>
                             <InputNumber
                                 size="large"
                                 min="0"
                                 step="0.01"
                                 style={{minWidth: "100%"}}
+                                addonAfter="км."
                             />
                         </Form.Item>
                         <Form.Item label="Чаевые" name="cash"
@@ -140,6 +141,7 @@ const EndDayPage = () => {
                                 min="0"
                                 step="0.01"
                                 style={{minWidth: "100%"}}
+                                addonAfter={settings?.currency}
                             />
                         </Form.Item>
                         <Form.Item label="Примечание" name="note">

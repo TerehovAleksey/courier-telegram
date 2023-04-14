@@ -7,6 +7,7 @@ const createSettings = (userId: string) => {
     const data: ISettings = {
         fuelCost: 2.45,
         fuelExpenses: 8,
+        currency: "руб.",
         templates: [
             {
                 id: uuid(),
@@ -45,7 +46,7 @@ const createSettings = (userId: string) => {
             },
         ],
     };
-    return setDoc(doc(db,"Settings", userId), data);
+    return setDoc(doc(db, "Settings", userId), data);
 };
 
 export const settingsSubscriber = (userId: string, onSettingsChanged: (settings: ISettings | null) => void,) => {
@@ -58,4 +59,4 @@ export const settingsSubscriber = (userId: string, onSettingsChanged: (settings:
     });
 };
 
-export const updateSettings = (userId: string, settings: ISettings) => setDoc(doc(db,"Settings", userId), settings);
+export const updateSettings = (userId: string, settings: ISettings) => setDoc(doc(db, "Settings", userId), settings);

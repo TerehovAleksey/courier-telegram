@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from "react";
 import {ISettings} from "../../../models/ISettings";
-import {Button, Card, Form, InputNumber, Space} from "antd";
+import {Button, Card, Form, Input, InputNumber, Space} from "antd";
 import {updateSettings} from "../../../firebase/settingsApi";
 import {AuthContext} from "../../../providers/AuthProvider";
 import {useAdapter} from "../../../hooks/useAdapter";
@@ -9,6 +9,7 @@ import CardLoader from "../../../components/CardLoader";
 interface ISettingsForm {
     fuelCost: number;
     fuelExpenses: number;
+    currency: string;
 }
 
 type GeneralCardProps = {
@@ -23,13 +24,22 @@ const GeneralCard = ({settings}: GeneralCardProps) => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        form.setFieldsValue({"fuelCost": settings?.fuelCost ?? 0, "fuelExpenses": settings?.fuelExpenses ?? 0});
+        form.setFieldsValue({
+            "fuelCost": settings?.fuelCost ?? 0,
+            "fuelExpenses": settings?.fuelExpenses ?? 0,
+            "currency": settings?.currency
+        });
     }, [settings]);
 
     const onFormSubmit = (values: ISettingsForm) => {
         if (user) {
             setLoading(true);
-            const result = {...settings, fuelCost: values.fuelCost, fuelExpenses: values.fuelExpenses} as ISettings;
+            const result = {
+                ...settings,
+                fuelCost: values.fuelCost,
+                fuelExpenses: values.fuelExpenses,
+                currency: values.currency
+            } as ISettings;
             updateSettings(user.uid, result)
                 .then(() => showNotification("Параметры успешно обновлены!"))
                 .finally(() => setLoading(false));
@@ -49,6 +59,7 @@ const GeneralCard = ({settings}: GeneralCardProps) => {
                                 min="0"
                                 step="0.01"
                                 style={{minWidth: "100%"}}
+                                addonAfter={settings?.currency}
                             />
                         </Form.Item>
                         <Form.Item label="Расход топлива" name="fuelExpenses"
@@ -58,7 +69,11 @@ const GeneralCard = ({settings}: GeneralCardProps) => {
                                 min="0"
                                 step="0.01"
                                 style={{minWidth: "100%"}}
+                                addonAfter="л/100км"
                             />
+                        </Form.Item>
+                        <Form.Item label="Валюта" name="currency">
+                            <Input size="large"/>
                         </Form.Item>
                         <Button htmlType="submit" type="primary">Обновить</Button>
                     </Form>

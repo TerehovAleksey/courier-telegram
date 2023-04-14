@@ -186,6 +186,7 @@ const DeliveryPage = () => {
                                 min="0"
                                 step="0.01"
                                 style={{minWidth: "100%"}}
+                                addonAfter={settings?.currency}
                             />
                         </Form.Item>
                         <Form.Item label="Тип оплаты" name="paymentId"
