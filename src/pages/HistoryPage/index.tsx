@@ -7,6 +7,7 @@ import {AuthContext} from "../../providers/AuthProvider";
 import {IDay} from "../../models/IDay";
 import SelectorCard from "./components/SelectorCard";
 import {useAdapter} from "../../hooks/useAdapter";
+import {deleteDay, getCurrentDay, reOpenDay} from "../../firebase/dayApi";
 
 const DEFAULT_KEY = "all";
 
@@ -19,10 +20,14 @@ const HistoryPage = () => {
     const {showConfirm, showNotification} = useAdapter();
 
     useEffect(() => {
+        loadData();
+    }, []);
+
+    const loadData = () => {
         if (user) {
             getDays(user.uid).then(result => setDays(result));
         }
-    }, []);
+    };
 
     const filtered = useMemo(() => {
         if (templateId === DEFAULT_KEY) {
@@ -32,18 +37,34 @@ const HistoryPage = () => {
         }
     }, [templateId, days]);
 
-    const deleteDay = (dayId: string) => {
+    const delDay = (dayId: string) => {
         showConfirm("Вы уверены, что хотите удалить день?", () => {
-            console.log(dayId);
-            showNotification("В разработке!");
+            if (user) {
+                deleteDay(user.uid, dayId)
+                    .then(() => {
+                        showNotification("Запись уделена!");
+                        loadData();
+                    });
+            }
+
         });
     };
 
     const reopenDay = (dayId: string) => {
         showConfirm("Вы уверены, что хотите переоткрыть день?", () => {
-            //проверить, есть ли открытый день
-            console.log(dayId);
-            showNotification("В разработке!");
+            if (user) {
+                getCurrentDay(user.uid)
+                    .then(response => {
+                        if (response) {
+                            showNotification("На данный момент есть открытый день! Закройте его и повторите попытку.");
+                        } else {
+                            reOpenDay(user.uid, dayId)
+                                .then(() => {
+                                    showNotification("День переоткрыт! Перейдите на главный экран для просмотра и редактирования");
+                                });
+                        }
+                    });
+            }
         });
     };
 
@@ -51,7 +72,7 @@ const HistoryPage = () => {
         <Space direction="vertical" style={{display: "flex"}}>
             <SelectorCard defaultKey={DEFAULT_KEY} onSelect={setTemplateId}/>
             <GeneralCard days={filtered}/>
-            <FilterCard days={filtered} reopenDay={reopenDay} deleteDay={deleteDay}/>
+            <FilterCard days={filtered} reopenDay={reopenDay} deleteDay={delDay}/>
         </Space>
     );
 };

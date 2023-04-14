@@ -30,9 +30,25 @@ const EndDayPage = () => {
     const goBack = () => nav(-1);
 
     useEffect(() => {
+        if (user) {
+            getCurrentDay(user.uid)
+                .then(response => {
+                    if (response) {
+                        form.setFieldsValue({
+                            "date": dayjs(response.startTime),
+                            "time": dayjs(),
+                            "distance": response.distance,
+                            "cash": response.dayMoney,
+                            "note": response.note
+                        });
+                    } else {
+                        form.setFieldsValue({"date": dayjs(), "time": dayjs(), "distance": 0, "cash": 0});
+                    }
+                });
+        }
+    }, []);
 
-        form.setFieldsValue({"date": dayjs(), "time": dayjs(), "distance": 0, "cash": 0});
-
+    useEffect(() => {
         if (tgEnabled) {
             tgButton.text = "Закончить день";
             tgButton.onClick(form.submit);
