@@ -1,8 +1,9 @@
 import {Button, Card, Descriptions, Space} from "antd";
-import React from "react";
+import React, {useContext} from "react";
 import {useNavigate} from "react-router-dom";
 import {IDay} from "../../../models/IDay";
 import dayjs from "dayjs";
+import {SettingsContext} from "../../../providers/SettingsProvider";
 
 type GeneralCardProps = {
     day: IDay | null;
@@ -11,6 +12,7 @@ type GeneralCardProps = {
 const GeneralCard = ({day}: GeneralCardProps) => {
 
     const nav = useNavigate();
+    const settings = useContext(SettingsContext);
 
     const startTimeString = () => {
         if (day === null) {
@@ -31,8 +33,8 @@ const GeneralCard = ({day}: GeneralCardProps) => {
                 <Descriptions size="small" column={1}>
                     <Descriptions.Item label="Начало">{startTimeString()}</Descriptions.Item>
                     <Descriptions.Item label="Доставок">{day?.count}</Descriptions.Item>
-                    <Descriptions.Item label="Заработано">{day?.dayCost.toFixed(2)}</Descriptions.Item>
-                    <Descriptions.Item label="На кармане">{day?.cashMoney}</Descriptions.Item>
+                    <Descriptions.Item label="Заработано">{day?.dayCost} {settings?.currency}</Descriptions.Item>
+                    <Descriptions.Item label="На кармане">{day?.cashMoney} {settings?.currency}</Descriptions.Item>
                 </Descriptions>
                 <Button type="primary" onClick={() => nav("end")}>Закончить день</Button>
             </Space>

@@ -117,6 +117,7 @@ const StartDayPage = () => {
                                 min="0"
                                 step="0.01"
                                 style={{minWidth: "100%"}}
+                                addonAfter={settings?.currency}
                             />
                         </Form.Item>
                         {!tgEnabled && <div style={{textAlign: "center"}}>

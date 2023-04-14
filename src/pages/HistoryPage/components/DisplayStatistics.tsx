@@ -1,6 +1,7 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Descriptions, Divider, Empty} from "antd";
 import {IDay} from "../../../models/IDay";
+import {SettingsContext} from "../../../providers/SettingsProvider";
 
 export interface IFilterStatistics {
     time: string | null;
@@ -20,6 +21,7 @@ type DisplayStatisticsProps = {
 
 const DisplayStatistics = ({displayType, days}: DisplayStatisticsProps) => {
 
+    const settings = useContext(SettingsContext);
     const [statistics, setStatistics] = useState<IFilterStatistics | null>(null);
 
     useEffect(() => {
@@ -86,12 +88,12 @@ const DisplayStatistics = ({displayType, days}: DisplayStatisticsProps) => {
                             <Descriptions.Item label="Рабочих дней">{statistics.days}</Descriptions.Item>
                         }
                         <Descriptions.Item label="Доставок">{statistics.count}</Descriptions.Item>
-                        <Descriptions.Item label="Чаевые">{statistics.dayMoney.toFixed(2)}</Descriptions.Item>
-                        <Descriptions.Item label="К выплате">{statistics.dayCost.toFixed(2)}</Descriptions.Item>
-                        <Descriptions.Item label="Расстояние">{statistics.distance.toFixed(2)}</Descriptions.Item>
-                        <Descriptions.Item label="Затраты">{statistics.expenses?.toFixed(2)}</Descriptions.Item>
+                        <Descriptions.Item label="Чаевые">{statistics.dayMoney.toFixed(2)} {settings?.currency}</Descriptions.Item>
+                        <Descriptions.Item label="К выплате">{statistics.dayCost.toFixed(2)} {settings?.currency}</Descriptions.Item>
+                        <Descriptions.Item label="Расстояние">{statistics.distance.toFixed(2)} км.</Descriptions.Item>
+                        <Descriptions.Item label="Затраты">{statistics.expenses?.toFixed(2)} {settings?.currency}</Descriptions.Item>
                         <Divider/>
-                        <Descriptions.Item label="Итого">{statistics.total.toFixed(2)}</Descriptions.Item>
+                        <Descriptions.Item label="Итого">{statistics.total.toFixed(2)}  {settings?.currency}</Descriptions.Item>
                     </Descriptions>
                 </>
             }
