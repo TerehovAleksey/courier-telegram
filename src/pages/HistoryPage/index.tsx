@@ -1,19 +1,19 @@
-import React, {useContext, useEffect, useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import GeneralCard from "./components/GeneralCard";
 import {Space} from "antd";
 import FilterCard from "./components/FilterCard";
 import {getDays} from "../../firebase/historyApi";
-import {AuthContext} from "../../providers/AuthProvider";
 import {IDay} from "../../models/IDay";
 import SelectorCard from "./components/SelectorCard";
 import {useAdapter} from "../../hooks/useAdapter";
 import {deleteDay, getCurrentDay, reOpenDay} from "../../firebase/dayApi";
+import {useUser} from "../../hooks/useUser";
 
 const DEFAULT_KEY = "all";
 
 const HistoryPage = () => {
 
-    const user = useContext(AuthContext);
+    const user = useUser();
     const [templateId, setTemplateId] = useState(DEFAULT_KEY);
     const [days, setDays] = useState<IDay[] | null>(null);
 

@@ -1,14 +1,14 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import dayjs, {Dayjs} from "dayjs";
 import {useNavigate} from "react-router-dom";
-import {SettingsContext} from "../providers/SettingsProvider";
-import {AuthContext} from "../providers/AuthProvider";
 import {getCurrentDay, updateDay} from "../firebase/dayApi";
 import {Button, Card, DatePicker, Form, Input, InputNumber, Space, TimePicker} from "antd";
 import {tgBackButton, tgButton, tgButtonAwaiting, tgEnabled} from "../helpers/telegram";
 import {useAdapter} from "../hooks/useAdapter";
 import locale from "antd/es/date-picker/locale/ru_RU";
 import CardLoader from "../components/CardLoader";
+import {useSettings} from "../hooks/useSettings";
+import {useUser} from "../hooks/useUser";
 
 interface IEndDayForm {
     date: Dayjs;
@@ -21,8 +21,8 @@ interface IEndDayForm {
 const EndDayPage = () => {
 
     const nav = useNavigate();
-    const settings = useContext(SettingsContext);
-    const user = useContext(AuthContext);
+    const settings = useSettings();
+    const user = useUser();
     const [form] = Form.useForm();
     const {showAlert} = useAdapter();
     const [loading, setLoading] = useState(false);

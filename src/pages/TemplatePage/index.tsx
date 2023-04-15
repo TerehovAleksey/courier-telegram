@@ -1,25 +1,25 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, Form, Space} from "antd";
 import GeneralCard from "./components/GeneralCard";
 import DeliveryTypesCard from "./components/DeliveryTypesCard";
 import PaymentTypesCard from "./components/PaymentTypesCard";
 import {tgBackButton, tgButton, tgEnabled} from "../../helpers/telegram";
 import {useNavigate, useParams} from "react-router-dom";
-import {SettingsContext} from "../../providers/SettingsProvider";
 import {ITemplate} from "../../models/ITemplate";
 import uuid from "react-uuid";
 import {useAdapter} from "../../hooks/useAdapter";
 import {updateSettings} from "../../firebase/settingsApi";
-import {AuthContext} from "../../providers/AuthProvider";
 import {ISettings} from "../../models/ISettings";
 import CardLoader from "../../components/CardLoader";
+import {useSettings} from "../../hooks/useSettings";
+import {useUser} from "../../hooks/useUser";
 
 const TemplatePage = () => {
 
     const nav = useNavigate();
     const {id} = useParams();
-    const settings = useContext(SettingsContext);
-    const user = useContext(AuthContext);
+    const settings = useSettings();
+    const user = useUser();
     const [form] = Form.useForm();
     const {showAlert} = useAdapter();
 

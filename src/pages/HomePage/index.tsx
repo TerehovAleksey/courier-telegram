@@ -1,5 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
-import {AuthContext} from "../../providers/AuthProvider";
+import React, {useEffect, useState} from "react";
 import GeneralCard from "./components/GeneralCard";
 import DeliveryCard from "./components/DeliveryCard";
 import {getCurrentDay, updateDay} from "../../firebase/dayApi";
@@ -10,12 +9,13 @@ import {Button, Space} from "antd";
 import {tgEnabled} from "../../helpers/telegram";
 import {useNavigate} from "react-router-dom";
 import {calculateRemoveDelivery} from "../../helpers/dayCalculation";
+import {useUser} from "../../hooks/useUser";
 
 const HomePage = () => {
 
     const nav = useNavigate();
 
-    const user = useContext(AuthContext);
+    const user = useUser();
     const [isLoading, setIsLoading] = useState(true);
     const [day, setDay] = useState<IDay | null>(null);
 
