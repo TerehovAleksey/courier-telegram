@@ -1,7 +1,7 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Card, Form, Select} from "antd";
 import {DefaultOptionType} from "antd/es/select";
-import {SettingsContext} from "../../../providers/SettingsProvider";
+import {useSettings} from "../../../hooks/useSettings";
 
 type SelectorCardProps = {
     defaultKey?: string;
@@ -12,7 +12,7 @@ const SelectorCard = ({onSelect, defaultKey = "ALL"}: SelectorCardProps) => {
 
     const emptySelector: DefaultOptionType[] = [{label: "Все", value: defaultKey}];
 
-    const settings = useContext(SettingsContext);
+    const settings = useSettings();
     const [form] = Form.useForm();
     const [selector, setSelector] = useState(emptySelector);
 

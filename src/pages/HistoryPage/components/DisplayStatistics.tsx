@@ -1,7 +1,7 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Descriptions, Divider, Empty} from "antd";
 import {IDay} from "../../../models/IDay";
-import {SettingsContext} from "../../../providers/SettingsProvider";
+import {useSettings} from "../../../hooks/useSettings";
 
 export interface IFilterStatistics {
     time: string | null;
@@ -21,7 +21,7 @@ type DisplayStatisticsProps = {
 
 const DisplayStatistics = ({displayType, days}: DisplayStatisticsProps) => {
 
-    const settings = useContext(SettingsContext);
+    const settings = useSettings();
     const [statistics, setStatistics] = useState<IFilterStatistics | null>(null);
 
     useEffect(() => {

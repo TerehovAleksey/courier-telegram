@@ -1,15 +1,15 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, Card, DatePicker, Form, InputNumber, Select, Space, TimePicker} from "antd";
 import {tgBackButton, tgButton, tgButtonAwaiting, tgEnabled} from "../helpers/telegram";
 import dayjs, {Dayjs} from "dayjs";
-import {AuthContext} from "../providers/AuthProvider";
-import {SettingsContext} from "../providers/SettingsProvider";
 import {createDay} from "../firebase/dayApi";
 import {useNavigate} from "react-router-dom";
 import uuid from "react-uuid";
 import {IDay} from "../models/IDay";
 import locale from "antd/es/date-picker/locale/ru_RU";
 import CardLoader from "../components/CardLoader";
+import {useSettings} from "../hooks/useSettings";
+import {useUser} from "../hooks/useUser";
 
 interface IStartDayForm {
     date: Dayjs;
@@ -21,8 +21,8 @@ interface IStartDayForm {
 const StartDayPage = () => {
 
     const nav = useNavigate();
-    const settings = useContext(SettingsContext);
-    const user = useContext(AuthContext);
+    const settings = useSettings();
+    const user = useUser();
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
 

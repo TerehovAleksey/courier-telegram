@@ -40,6 +40,7 @@ const PageLayout = () => {
 
     return (
         <Layout style={{minHeight: "100vh"}}>
+            {/*background*/}
             <Header style={{position: "sticky", top: 0, zIndex: 1, width: "100%", padding: 0, display: "flex"}}>
                 <MainMenu/>
             </Header>

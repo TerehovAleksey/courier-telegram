@@ -1,9 +1,9 @@
 import {Button, Card, Descriptions, Space} from "antd";
-import React, {useContext} from "react";
+import React from "react";
 import {useNavigate} from "react-router-dom";
 import {IDay} from "../../../models/IDay";
 import dayjs from "dayjs";
-import {SettingsContext} from "../../../providers/SettingsProvider";
+import {useSettings} from "../../../hooks/useSettings";
 
 type GeneralCardProps = {
     day: IDay | null;
@@ -12,7 +12,7 @@ type GeneralCardProps = {
 const GeneralCard = ({day}: GeneralCardProps) => {
 
     const nav = useNavigate();
-    const settings = useContext(SettingsContext);
+    const settings = useSettings();
 
     const startTimeString = () => {
         if (day === null) {

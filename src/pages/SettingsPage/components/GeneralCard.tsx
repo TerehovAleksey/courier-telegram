@@ -1,10 +1,11 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {ISettings} from "../../../models/ISettings";
 import {Button, Card, Form, Input, InputNumber, Space} from "antd";
 import {updateSettings} from "../../../firebase/settingsApi";
-import {AuthContext} from "../../../providers/AuthProvider";
 import {useAdapter} from "../../../hooks/useAdapter";
 import CardLoader from "../../../components/CardLoader";
+import {useUser} from "../../../hooks/useUser";
+import {useSettings} from "../../../hooks/useSettings";
 
 interface ISettingsForm {
     fuelCost: number;
@@ -12,13 +13,10 @@ interface ISettingsForm {
     currency: string;
 }
 
-type GeneralCardProps = {
-    settings: ISettings | null
-}
+const GeneralCard = () => {
 
-const GeneralCard = ({settings}: GeneralCardProps) => {
-
-    const user = useContext(AuthContext);
+    const user = useUser();
+    const settings = useSettings();
     const {showNotification} = useAdapter();
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);

@@ -55,6 +55,7 @@ const ThemeProvider = ({children}: ThemeProviderProps) => {
                 colorPrimary: tg.themeParams.button_color,
                 colorTextBase: tg.themeParams.text_color,
                 colorLink: tg.themeParams.link_color,
+
             }
         }));
     };

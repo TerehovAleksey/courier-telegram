@@ -1,22 +1,19 @@
-import React, {useContext, useState} from "react";
+import React, {useState} from "react";
 import {Button, Card, Space, Typography} from "antd";
-import {ISettings} from "../../../models/ISettings";
 import {useAdapter} from "../../../hooks/useAdapter";
 import {useNavigate} from "react-router-dom";
 import {updateSettings} from "../../../firebase/settingsApi";
-import {AuthContext} from "../../../providers/AuthProvider";
 import CardLoader from "../../../components/CardLoader";
 import {EditList} from "../../../components/EditList";
+import {useUser} from "../../../hooks/useUser";
+import {useSettings} from "../../../hooks/useSettings";
 
-type TemplatesCardProps = {
-    settings: ISettings | null
-}
-
-const TemplatesCard = ({settings}: TemplatesCardProps) => {
+const TemplatesCard = () => {
 
     const nav = useNavigate();
+    const user = useUser();
+    const settings = useSettings();
     const {showNotification} = useAdapter();
-    const user = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
 
     const deleteTemplate = (id: string) => {

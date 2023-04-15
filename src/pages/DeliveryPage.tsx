@@ -1,9 +1,7 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import dayjs, {Dayjs} from "dayjs";
 import {IDelivery} from "../models/IDelivery";
 import uuid from "react-uuid";
-import {SettingsContext} from "../providers/SettingsProvider";
-import {AuthContext} from "../providers/AuthProvider";
 import {IDay} from "../models/IDay";
 import {getCurrentDay, updateDay} from "../firebase/dayApi";
 import {ITemplate} from "../models/ITemplate";
@@ -14,6 +12,8 @@ import {useAdapter} from "../hooks/useAdapter";
 import {calculateAddDelivery, calculateUpdateDelivery} from "../helpers/dayCalculation";
 import CardLoader from "../components/CardLoader";
 import locale from "antd/es/date-picker/locale/ru_RU";
+import {useSettings} from "../hooks/useSettings";
+import {useUser} from "../hooks/useUser";
 
 interface IDeliveryForm {
     date: Dayjs;
@@ -30,8 +30,8 @@ const DeliveryPage = () => {
 
     const location = useLocation();
     const nav = useNavigate();
-    const settings = useContext(SettingsContext);
-    const user = useContext(AuthContext);
+    const settings = useSettings();
+    const user = useUser();
     const [form] = Form.useForm();
     const {showAlert} = useAdapter();
 
