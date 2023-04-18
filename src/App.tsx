@@ -16,13 +16,9 @@ import TemplatePage from "./pages/TemplatePage";
 import DayPage from "./pages/DayPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import dayjs from "dayjs";
-import "dayjs/locale/ru.js";
-import updateLocale from "dayjs/plugin/updateLocale";
+import locale from "dayjs/locale/ru.js";
 
-dayjs.extend(updateLocale);
-dayjs.updateLocale("ru", {
-    weekStart: 1,
-});
+dayjs.locale(locale);
 
 function App() {
     return (
