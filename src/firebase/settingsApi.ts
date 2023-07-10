@@ -3,6 +3,7 @@ import uuid from "react-uuid";
 import {doc, onSnapshot, setDoc} from "firebase/firestore";
 import {db} from "./firebase";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const createSettings = (userId: string) => {
     const data: ISettings = {
         fuelCost: 2.45,
@@ -52,9 +53,10 @@ const createSettings = (userId: string) => {
 export const settingsSubscriber = (userId: string, onSettingsChanged: (settings: ISettings | null) => void,) => {
     const settingsDoc = doc(db, `Settings/${userId}`);
     return onSnapshot(settingsDoc, (snapshot) => {
-        if (snapshot.data() === undefined) {
-            createSettings(userId);
-        }
+        // иногда затирает данные
+        // if (snapshot.data() === undefined) {
+        //     createSettings(userId);
+        // }
         onSettingsChanged(snapshot.data() as ISettings ?? null);
     });
 };
