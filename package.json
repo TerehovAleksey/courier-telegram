@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "fix": "eslint . fix"
   },
   "dependencies": {
     "@types/telegram-web-app": "^7.3.1",

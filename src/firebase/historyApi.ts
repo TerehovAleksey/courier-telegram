@@ -13,6 +13,7 @@ export const getDays = (userId: string) => {
                 ...result,
                 startTime: result.startTime.toDate(),
                 endTime: result.endTime?.toDate() ?? null,
+                //eslint-disable-next-line
                 deliveries: result.deliveries.map((d: { dateTime: { toDate: () => any; }; }) => ({
                     ...d,
                     dateTime: d.dateTime.toDate()
@@ -22,4 +23,4 @@ export const getDays = (userId: string) => {
         });
         return days;
     });
-}
+};

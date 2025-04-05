@@ -25,7 +25,9 @@ const HistoryPage = () => {
 
     const loadData = () => {
         if (user) {
-            getDays(user.uid).then(result => setDays(result));
+            getDays(user.uid).then(result =>
+                setDays(result)
+            );
         }
     };
 

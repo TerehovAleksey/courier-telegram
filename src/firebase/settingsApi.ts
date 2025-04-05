@@ -1,6 +1,6 @@
 import {ISettings} from "../models/ISettings";
 import uuid from "react-uuid";
-import {doc, onSnapshot, setDoc} from "firebase/firestore";
+import {collection, doc, getDocs, onSnapshot, query, setDoc, where} from "firebase/firestore";
 import {db} from "./firebase";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -48,6 +48,15 @@ const createSettings = (userId: string) => {
         ],
     };
     return setDoc(doc(db, "Settings", userId), data);
+};
+
+export const getSettings = (userId: string) => {
+    const settingsRef = collection(db, "Settings");
+    const q = query(settingsRef, where("__name__", "==", userId));
+    return getDocs(q).then(snapshot => {
+        const data = snapshot.docs[0]?.data();
+        return data ? {...data} as ISettings : null;
+    });
 };
 
 export const settingsSubscriber = (userId: string, onSettingsChanged: (settings: ISettings | null) => void,) => {
