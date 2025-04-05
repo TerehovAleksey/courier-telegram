@@ -20,7 +20,7 @@ const GeneralCard = ({days}: GeneralCardProps) => {
     }, [days]);
 
     return (
-        <Card title="Статистика" bordered={false}>
+        <Card title="Статистика" variant={'borderless'}>
             <Row gutter={16}>
                 <Col span={12}>
                     <Statistic title="Всего доставок" value={totalCount} formatter={formatter}/>

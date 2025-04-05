@@ -4,7 +4,7 @@ import {tgBackButton, tgButton, tgButtonAwaiting, tgEnabled} from "../helpers/te
 import dayjs, {Dayjs} from "dayjs";
 import {createDay} from "../firebase/dayApi";
 import {useNavigate} from "react-router-dom";
-import uuid from "react-uuid";
+import {v4 as uuid} from 'uuid';
 import {IDay} from "../models/IDay";
 import locale from "antd/es/date-picker/locale/ru_RU";
 import CardLoader from "../components/CardLoader";
@@ -91,7 +91,7 @@ const StartDayPage = () => {
 
     return (
         <CardLoader isLoading={loading}>
-            <Card title="Начало дня" bordered={false}>
+            <Card title="Начало дня" variant={'borderless'}>
                 <Space direction="vertical" style={{display: "flex"}}>
                     <Form<IStartDayForm> form={form} layout="vertical" onFinish={onFormSubmit}>
                         <Form.Item label="Дата" name="date">

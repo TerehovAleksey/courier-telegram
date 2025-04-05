@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import dayjs, {Dayjs} from "dayjs";
 import {IDelivery} from "../models/IDelivery";
-import uuid from "react-uuid";
+import {v4 as uuid} from 'uuid';
 import {IDay} from "../models/IDay";
 import {getCurrentDay, updateDay} from "../firebase/dayApi";
 import {ITemplate} from "../models/ITemplate";
@@ -146,9 +146,9 @@ const DeliveryPage = () => {
                 deliveryType: template?.deliveryTypes.find(t => t.id === values.typeId) ?? null,
             };
 
-            if (edited){
+            if (edited) {
                 calculateUpdateDelivery(day, delivery);
-            }else{
+            } else {
                 calculateAddDelivery(day, delivery);
             }
 
@@ -162,7 +162,7 @@ const DeliveryPage = () => {
 
     return (
         <CardLoader isLoading={loading}>
-            <Card title="Доставка" bordered={false}>
+            <Card title="Доставка" variant={'borderless'}>
                 <Space direction="vertical" style={{display: "flex"}}>
                     <Form<IDeliveryForm> form={form} layout="vertical" disabled={loading} onFinish={onFormSubmit}>
                         <Form.Item label="Дата" name="date">

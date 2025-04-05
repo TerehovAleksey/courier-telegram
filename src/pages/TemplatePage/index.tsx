@@ -6,7 +6,7 @@ import PaymentTypesCard from "./components/PaymentTypesCard";
 import {tgBackButton, tgButton, tgEnabled} from "../../helpers/telegram";
 import {useNavigate, useParams} from "react-router-dom";
 import {ITemplate} from "../../models/ITemplate";
-import uuid from "react-uuid";
+import {v4 as uuid} from 'uuid';
 import {useAdapter} from "../../hooks/useAdapter";
 import {updateSettings} from "../../firebase/settingsApi";
 import {ISettings} from "../../models/ISettings";

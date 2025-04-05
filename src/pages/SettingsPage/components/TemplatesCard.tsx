@@ -27,7 +27,7 @@ const TemplatesCard = () => {
 
     return (
         <CardLoader isLoading={loading}>
-            <Card title="Шаблоны" bordered={false}>
+            <Card title="Шаблоны" variant={'borderless'}>
                 <Space direction="vertical" style={{display: "flex"}}>
                     {(settings === null || settings.templates.length === 0) ?
                         <Typography>Доставок пока нет</Typography> :

@@ -21,7 +21,7 @@ const StartDayCard = () => {
     }, []);
 
     return (
-        <Card title="День ещё не начат!" bordered={false}>
+        <Card title="День ещё не начат!" variant={'borderless'}>
             <Space direction="vertical">
                 <Typography>Начните день или добавьте готовые данные.</Typography>
                 <Button onClick={() => nav("day")}>Добавить день</Button>

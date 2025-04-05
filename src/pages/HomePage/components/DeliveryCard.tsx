@@ -12,7 +12,7 @@ type DeliveryCardProps = {
 
 const DeliveryCard = ({day, onAddDelivery, onEditDelivery, onDeleteDelivery}: DeliveryCardProps) => {
     return (
-        <Card title="Доставки" bordered={false}>
+        <Card title="Доставки" variant={'borderless'}>
             <Space direction="vertical" style={{display: "flex"}}>
                 {(day === null || day.deliveries.length === 0) ?
                     <Typography>Доставок пока нет</Typography> :

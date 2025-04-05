@@ -46,7 +46,7 @@ const GeneralCard = () => {
 
     return (
         <CardLoader isLoading={loading}>
-            <Card title="Основные параметры" bordered={false}>
+            <Card title="Основные параметры" variant={'borderless'}>
                 <Space direction="vertical" style={{display: "flex"}}>
                     <Form<ISettingsForm> form={form} layout="vertical" onFinish={onFormSubmit}
                                          disabled={loading}>

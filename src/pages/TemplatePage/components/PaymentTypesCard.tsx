@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Button, Card, Checkbox, Empty, Form, Input, Space} from "antd";
 import {IPaymentType} from "../../../models/IPaymentType";
-import uuid from "react-uuid";
+import {v4 as uuid} from 'uuid';
 import {EditList} from "../../../components/EditList";
 
 type PaymentTypesCardProps = {
@@ -46,7 +46,7 @@ const PaymentTypesCard = ({paymentTypes, onChanged}: PaymentTypesCardProps) => {
     };
 
     return (
-        <Card title="Типы оплат" bordered={false}>
+        <Card title="Типы оплат" variant={'borderless'}>
             <Space direction="vertical" style={{display: "flex"}}>
                 <>
                     {

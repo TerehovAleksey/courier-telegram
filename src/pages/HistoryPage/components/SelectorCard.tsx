@@ -28,7 +28,7 @@ const SelectorCard = ({onSelect, defaultKey = "ALL"}: SelectorCardProps) => {
     }, [selector]);
 
     return (
-        <Card title="Выберете шаблон" bordered={false}>
+        <Card title="Выберете шаблон" variant={'borderless'}>
             <Form form={form} layout="vertical">
                 <Form.Item label="Шаблон" name="templateId"
                            rules={[{required: true, message: "Выберете шаблон"}]}>

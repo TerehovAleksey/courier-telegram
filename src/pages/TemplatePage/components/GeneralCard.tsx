@@ -24,7 +24,7 @@ const GeneralCard = ({initialValues, form, onChanged}: GeneralCardProps) => {
     }, [initialValues]);
 
     return (
-        <Card title="Новый шаблон" bordered={false}>
+        <Card title="Новый шаблон" variant={'borderless'}>
             <Space direction="vertical" style={{display: "flex"}}>
                 <Form<ITemplateForm> form={form} layout="vertical" onValuesChange={(_, values) => onChanged(values)}>
                     <Form.Item label="Название" name="name"

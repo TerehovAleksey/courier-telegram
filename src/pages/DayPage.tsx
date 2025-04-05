@@ -7,7 +7,7 @@ import {IDeliveryType} from "../models/IDeliveryType";
 import {useAdapter} from "../hooks/useAdapter";
 import {calculateAddDay} from "../helpers/dayCalculation";
 import {IDay} from "../models/IDay";
-import uuid from "react-uuid";
+import {v4 as uuid} from 'uuid';
 import {createDay} from "../firebase/dayApi";
 import locale from "antd/es/date-picker/locale/ru_RU";
 import CardLoader from "../components/CardLoader";
@@ -141,7 +141,7 @@ const DayPage = () => {
 
     return (
         <CardLoader isLoading={loading}>
-            <Card title="Новый день" bordered={false}>
+            <Card title="Новый день" variant={'borderless'}>
                 <Space direction="vertical" style={{display: "flex"}}>
                     <Form<IDayForm> form={form} layout="vertical" onFinish={onFormSubmit}>
                         <Form.Item label="Дата начала" name="dateStart"

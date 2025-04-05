@@ -1,5 +1,5 @@
 import {ISettings} from "../models/ISettings";
-import uuid from "react-uuid";
+import {v4 as uuid} from 'uuid';
 import {collection, doc, getDocs, onSnapshot, query, setDoc, where} from "firebase/firestore";
 import {db} from "./firebase";
 

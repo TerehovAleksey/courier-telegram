@@ -113,7 +113,7 @@ const EndDayPage = () => {
 
     return (
         <CardLoader isLoading={loading}>
-            <Card title="Конец дня" bordered={false}>
+            <Card title="Конец дня" variant={'borderless'}>
                 <Space direction="vertical" style={{display: "flex"}}>
                     <Form<IEndDayForm> form={form} layout="vertical" onFinish={onFormSubmit}>
                         <Form.Item label="Дата" name="date">

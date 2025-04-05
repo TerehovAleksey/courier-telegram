@@ -64,7 +64,7 @@ const FilterCard = ({days, deleteDay, reopenDay}: FilterCardProps) => {
     };
 
     return (
-        <Card title="Фильтр" bordered={false}>
+        <Card title="Фильтр" variant={'borderless'}>
             <div style={{display: "flex"}}>
                 <Select value={type} onChange={setType} size="large" style={{flexGrow: 1}}>
                     <Option value="date">Дата</Option>

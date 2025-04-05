@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Button, Card, Checkbox, Empty, Form, Input, InputNumber, Space} from "antd";
 import {IDeliveryType} from "../../../models/IDeliveryType";
-import uuid from "react-uuid";
+import {v4 as uuid} from 'uuid';
 import {EditList} from "../../../components/EditList";
 
 type DeliveryTypesCardProps = {
@@ -46,7 +46,7 @@ const DeliveryTypesCard = ({deliveryTypes, onChanged}: DeliveryTypesCardProps) =
     };
 
     return (
-        <Card title="Типы доставок" bordered={false}>
+        <Card title="Типы доставок" variant={'borderless'}>
             <Space direction="vertical" style={{display: "flex"}}>
                 <>
                     {

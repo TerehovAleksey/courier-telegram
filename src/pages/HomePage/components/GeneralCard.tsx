@@ -28,7 +28,7 @@ const GeneralCard = ({day}: GeneralCardProps) => {
     };
 
     return (
-        <Card title="Статистика за день" bordered={false}>
+        <Card title="Статистика за день" variant={'borderless'}>
             <Space direction="vertical" style={{display: "flex"}}>
                 <Descriptions size="small" column={1}>
                     <Descriptions.Item label="Начало">{startTimeString()}</Descriptions.Item>
