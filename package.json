@@ -1,7 +1,7 @@
 {
   "name": "courier-telegram",
   "private": true,
-  "version": "0.9.4",
+  "version": "0.9.6",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,26 +11,26 @@
     "fix": "eslint . fix"
   },
   "dependencies": {
-    "@types/telegram-web-app": "^7.3.1",
-    "antd": "^5.19.1",
-    "dayjs": "^1.11.11",
-    "firebase": "^10.12.3",
+    "@types/telegram-web-app": "^7.10.1",
+    "antd": "^5.24.6",
+    "dayjs": "^1.11.13",
+    "firebase": "^11.6.0",
     "react": "^18.3.1",
     "react-countup": "^6.5.3",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.24.1",
+    "react-router-dom": "^7.5.0",
     "react-uuid": "^2.0.0",
-    "styled-components": "^6.1.11"
+    "styled-components": "^6.1.17"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@typescript-eslint/eslint-plugin": "^7.13.1",
-    "@typescript-eslint/parser": "^7.13.1",
-    "@vitejs/plugin-react": "^4.3.1",
-    "eslint": "^8.57.0",
+    "@typescript-eslint/eslint-plugin": "^8.29.0",
+    "@typescript-eslint/parser": "^8.29.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.24.0",
     "eslint-plugin-react": "^7.32.2",
-    "typescript": "^5.5.3",
-    "vite": "^5.3.1"
+    "typescript": "^5.8.3",
+    "vite": "^6.2.5"
   }
 }
